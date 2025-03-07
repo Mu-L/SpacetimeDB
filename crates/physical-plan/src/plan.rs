@@ -817,7 +817,7 @@ impl PhysicalPlan {
     }
 
     /// Returns the names of the relvars that this operation returns
-    fn labels(&self) -> Vec<Label> {
+    pub fn labels(&self) -> Vec<Label> {
         fn find(plan: &PhysicalPlan, labels: &mut Vec<Label>) {
             match plan {
                 PhysicalPlan::TableScan(_, alias)
@@ -1306,8 +1306,8 @@ Seq Scan on t
             "select * from t where x = 5",
             expect![[r#"
 Seq Scan on t
-  Filter: (t.x = U64(5))
-  Output: t.id, t.x"#]],
+  Output: t.id, t.x
+  -> Filter: (t.x = U64(5))"#]],
         );
     }
 
@@ -1537,12 +1537,12 @@ Hash Join
         // Select index on (x, y, z)
         check_sub(
             &db,
-            "select * from t where x = 3 and y = 4 and z = 5",
+            "select * from t as x where x = 3 and y = 4 and z = 5",
             expect![
                 r#"
-Index Scan using Index id 2 on t
-    Index Cond: (t.z = U8(5), t.x = U8(3), t.y = U8(4))
-  Output: t.w, t.x, t.y, t.z"#
+Index Scan using Index id 2 (t.x, t.y, t.z) on t
+  Output: x.w, x.x, x.y, x.z
+  Index Cond: (x.z = U8(5), x.x = U8(3), x.y = U8(4))"#
             ],
         );
 
@@ -1552,9 +1552,9 @@ Index Scan using Index id 2 on t
             "select * from t where z = 5 and y = 4 and x = 3",
             expect![
                 r#"
-Index Scan using Index id 2 on t
-    Index Cond: (t.x = U8(3), t.z = U8(5), t.y = U8(4))
-  Output: t.w, t.x, t.y, t.z"#
+Index Scan using Index id 2 (t.x, t.y, t.z) on t
+  Output: t.w, t.x, t.y, t.z
+  Index Cond: (t.x = U8(3), t.z = U8(5), t.y = U8(4))"#
             ],
         );
         // Select index on x
@@ -1563,10 +1563,10 @@ Index Scan using Index id 2 on t
             "select * from t where x = 3 and y = 4",
             expect![
                 r#"
-Index Scan using Index id 0 on t
-    Index Cond: (t.x = U8(3))
-  Filter: (t.y = U8(4))
-  Output: t.w, t.x, t.y, t.z"#
+Index Scan using Index id 0 (t.x) on t
+  Output: t.w, t.x, t.y, t.z
+  Index Cond: (t.x = U8(3))
+  -> Filter: (t.y = U8(4))"#
             ],
         );
         // Select index on x
@@ -1575,10 +1575,10 @@ Index Scan using Index id 0 on t
             "select * from t where w = 5 and x = 4",
             expect![
                 r#"
-Index Scan using Index id 0 on t
-    Index Cond: (t.x = U8(4))
-  Filter: (t.w = U8(5))
-  Output: t.w, t.x, t.y, t.z"#
+Index Scan using Index id 0 (t.x) on t
+  Output: t.w, t.x, t.y, t.z
+  Index Cond: (t.x = U8(4))
+  -> Filter: (t.w = U8(5))"#
             ],
         );
         // Do not select index on (y, z)
@@ -1588,8 +1588,8 @@ Index Scan using Index id 0 on t
             expect![
                 r#"
 Seq Scan on t
-  Filter: (t.y = U8(4))
-  Output: t.w, t.x, t.y, t.z"#
+  Output: t.w, t.x, t.y, t.z
+  -> Filter: (t.y = U8(4))"#
             ],
         );
 
@@ -1602,9 +1602,9 @@ Seq Scan on t
             "select * from t where y = 1 and z = 2",
             expect![
                 r#"
-Index Scan using Index id 1 on t
-    Index Cond: (t.z = U8(2), t.y = U8(1))
-  Output: t.w, t.x, t.y, t.z"#
+Index Scan using Index id 1 (t.y, t.z) on t
+  Output: t.w, t.x, t.y, t.z
+  Index Cond: (t.z = U8(2), t.y = U8(1))"#
             ],
         );
 
@@ -1614,9 +1614,9 @@ Index Scan using Index id 1 on t
             "select * from t where z = 2 and y = 1",
             expect![
                 r#"
-Index Scan using Index id 1 on t
-    Index Cond: (t.y = U8(1), t.z = U8(2))
-  Output: t.w, t.x, t.y, t.z"#
+Index Scan using Index id 1 (t.y, t.z) on t
+  Output: t.w, t.x, t.y, t.z
+  Index Cond: (t.y = U8(1), t.z = U8(2))"#
             ],
         );
         // Select index on (y, z) and filter on (w)
@@ -1625,10 +1625,10 @@ Index Scan using Index id 1 on t
             "select * from t where w = 1 and y = 2 and z = 3",
             expect![
                 r#"
-Index Scan using Index id 1 on t
-    Index Cond: (t.z = U8(3), t.y = U8(2))
-  Filter: (t.w = U8(1))
-  Output: t.w, t.x, t.y, t.z"#
+Index Scan using Index id 1 (t.y, t.z) on t
+  Output: t.w, t.x, t.y, t.z
+  Index Cond: (t.z = U8(3), t.y = U8(2))
+  -> Filter: (t.w = U8(1))"#
             ],
         );
     }
@@ -1678,20 +1678,22 @@ Index Scan using Index id 1 on t
                 r#"
 Query: SELECT m.* FROM m CROSS JOIN p WHERE m.employee = 1
 Nested Loop
-  -> Index Scan using Index id 0 on m
-      Index Cond: (m.employee = U64(1))
+  -> Index Scan using Index id 0 Unique(m.employee) on m
+     Output: m.employee, m.manager
+     Index Cond: (m.employee = U64(1))
   -> Seq Scan on p:2
-  Output: m.employee, m.manager
+     Output: p.id, p.name
+  Output: m.employee, m.manager, p.id, p.name
 -------
 Schema:
 
 Label: m, TableId:1
   Columns: employee, manager
-  Indexes: Index id 0: (m.employee), Index id 1: (m.manager)
+  Indexes: Index id 0 Unique(m.employee) on m, Index id 1 (m.manager) on m
   Constraints: Constraint id 0: Unique(m.employee)
 Label: p, TableId:3
   Columns: id, name
-  Indexes: Index id 0: (p.id)
+  Indexes: Index id 0 Unique(p.id) on p
   Constraints: Constraint id 0: Unique(p.id)"#
             ],
         );
@@ -1730,10 +1732,12 @@ Label: p, TableId:3
             join m as p",
             expect![
                 r#"
-                Nested Loop
-                  -> Seq Scan on w
-                  -> Seq Scan on p
-                  Output: p.employee, p.manager"#
+Nested Loop
+  -> Seq Scan on w
+     Output: w.employee, w.project
+  -> Seq Scan on p
+     Output: p.employee, p.manager
+  Output: w.employee, w.project, p.employee, p.manager"#
             ],
         );
     }
@@ -1746,8 +1750,9 @@ Label: p, TableId:3
             "SELECT id FROM p",
             expect![
                 r#"
-                Seq Scan on p
-                  Output: p.id"#
+Seq Scan on p
+  Output: p.id, p.name
+  -> Project: p.id"#
             ],
         );
 
@@ -1756,10 +1761,13 @@ Label: p, TableId:3
             "SELECT p.id,m.employee FROM m CROSS JOIN p",
             expect![
                 r#"
-                Nested Loop
-                  -> Seq Scan on m
-                  -> Seq Scan on p
-                  Output: p.id, m.employee"#
+Nested Loop
+  -> Seq Scan on m
+     Output: m.employee, m.manager
+  -> Seq Scan on p
+     Output: p.id, p.name
+  Output: m.employee, m.manager, p.id, p.name
+  -> Project: p.id, m.employee"#
             ],
         );
     }
@@ -1772,9 +1780,9 @@ Label: p, TableId:3
             &db,
             "SELECT * FROM p WHERE id > 1",
             expect![[r#"
-                Seq Scan on p
-                  Filter: (p.id > U64(1))
-                  Output: p.id, p.name"#]],
+Seq Scan on p
+  Output: p.id, p.name
+  -> Filter: (p.id > U64(1))"#]],
         );
     }
 
@@ -1786,9 +1794,9 @@ Label: p, TableId:3
             &db,
             "SELECT m.* FROM m WHERE employee = 1",
             expect![[r#"
-Index Scan using Index id 0 on m
-    Index Cond: (m.employee = U64(1))
-  Output: m.employee, m.manager"#]],
+Index Scan using Index id 0 Unique(m.employee) on m
+  Output: m.employee, m.manager
+  Index Cond: (m.employee = U64(1))"#]],
         );
     }
 
@@ -1800,10 +1808,12 @@ Index Scan using Index id 0 on m
             &db,
             "SELECT p.* FROM m JOIN p",
             expect![[r#"
-                Nested Loop
-                  -> Seq Scan on m
-                  -> Seq Scan on p
-                  Output: p.id, p.name"#]],
+Nested Loop
+  -> Seq Scan on m
+     Output: m.employee, m.manager
+  -> Seq Scan on p
+     Output: p.id, p.name
+  Output: m.employee, m.manager, p.id, p.name"#]],
         );
     }
 
@@ -1815,13 +1825,17 @@ Index Scan using Index id 0 on m
             &db,
             "SELECT p.* FROM m JOIN p ON m.employee = p.id where m.employee = 1",
             expect![[r#"
-                Hash Join
-                  -> Seq Scan on m
-                  -> Seq Scan on p
-                  Inner Unique: false
-                  Join Cond: (m.employee = p.id)
-                  Filter: (m.employee = U64(1))
-                  Output: p.id, p.name"#]],
+Hash Join
+  -> Seq Scan on m
+     Output: m.employee, m.manager
+  -> Hash
+      Hash Cond: (p.id) //lookup  the join cond
+      -> Seq Scan on p
+         Output: p.id, p.name
+  Output: m.employee, m.manager, p.id, p.name
+  Inner Unique: false
+  Join Cond: (m.employee = p.id)
+  -> Filter: (m.employee = U64(1))"#]],
         );
     }
 
@@ -1834,10 +1848,11 @@ Index Scan using Index id 0 on m
             "SELECT p.* FROM m JOIN p ON m.employee = p.id",
             expect![[r#"
 Index Join: Rhs on p
+Output: p.id, p.name
   -> Seq Scan on m
+     Output: m.employee, m.manager
   Inner Unique: true
-  Join Cond: (m.employee = p.id)
-  Output: p.id, p.name"#]],
+  Join Cond: (m.employee = p.id)"#]],
         );
     }
 
@@ -1862,7 +1877,7 @@ Index Join: Rhs on p
             expect![[r#"
 Limit: 5
   -> Seq Scan on t
-  Output: t.x, t.y"#]],
+     Output: t.x, t.y"#]],
         );
 
         check_query(
@@ -1870,9 +1885,9 @@ Limit: 5
             "SELECT * FROM t WHERE x = 1 LIMIT 5",
             expect![[r#"
 Limit: 5
-  -> Index Scan using Index id 0 on t
-      Index Cond: (t.x = U8(1))
-  Output: t.x, t.y"#]],
+  -> Index Scan using Index id 0 (t.x) on t
+     Output: t.x, t.y
+     Index Cond: (t.x = U8(1))"#]],
         );
 
         check_query(
@@ -1881,8 +1896,8 @@ Limit: 5
             expect![[r#"
 Limit: 5
   -> Seq Scan on t
-    Filter: (t.y = U8(1))
-  Output: t.x, t.y"#]],
+     Output: t.x, t.y
+     -> Filter: (t.y = U8(1))"#]],
         );
     }
 
@@ -1895,8 +1910,9 @@ Limit: 5
             "SELECT COUNT(*) AS n FROM p",
             expect![[r#"
 Count
+  Output: n
   -> Seq Scan on p
-  Output: p.id, p.name"#]],
+     Output: p.id, p.name"#]],
         );
 
         check_query(
@@ -1904,9 +1920,10 @@ Count
             "SELECT COUNT(*) AS n FROM p WHERE id = 1",
             expect![[r#"
 Count
+  Output: n
   -> Seq Scan on p
-    Filter: (p.id = U64(1))
-  Output: p.id, p.name"#]],
+     Output: p.id, p.name
+     -> Filter: (p.id = U64(1))"#]],
         );
 
         // TODO: Is not yet possible to combine correctly `COUNT` with `LIMIT`
@@ -1935,6 +1952,7 @@ Insert on p
             expect![[r#"
 Update on p SET (p.name = String("bar"))
   -> Seq Scan on p
+     Output: p.id, p.name
   Output: void"#]],
         );
 
@@ -1943,8 +1961,9 @@ Update on p SET (p.name = String("bar"))
             "UPDATE p SET name = 'bar' WHERE id = 1",
             expect![[r#"
 Update on p SET (p.name = String("bar"))
-  -> Index Scan using Index id 0 on p
-      Index Cond: (p.id = U64(1))
+  -> Index Scan using Index id 0 Unique(p.id) on p
+     Output: p.id, p.name
+     Index Cond: (p.id = U64(1))
   Output: void"#]],
         );
 
@@ -1954,7 +1973,8 @@ Update on p SET (p.name = String("bar"))
             expect![[r#"
 Update on p SET (p.id = U64(2))
   -> Seq Scan on p
-    Filter: (p.name = String("bar"))
+     Output: p.id, p.name
+     -> Filter: (p.name = String("bar"))
   Output: void"#]],
         );
     }
@@ -1969,6 +1989,7 @@ Update on p SET (p.id = U64(2))
             expect![[r#"
 Delete on p
   -> Seq Scan on p
+     Output: p.id, p.name
   Output: void"#]],
         );
 
@@ -1978,7 +1999,8 @@ Delete on p
             expect![[r#"
 Delete on p
   -> Seq Scan on p
-    Filter: (p.id = U64(1))
+     Output: p.id, p.name
+     -> Filter: (p.id = U64(1))
   Output: void"#]],
         );
     }
