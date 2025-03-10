@@ -6,10 +6,22 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Utils;
 
-public record MemberDeclaration(string Name, string Type, string TypeInfo)
+public record MemberDeclaration(
+    string Name,
+    string Type,
+    string TypeInfo,
+    bool IsNullable,
+    bool IsNullableReferenceType
+)
 {
     public MemberDeclaration(ISymbol member, ITypeSymbol type, DiagReporter diag)
-        : this(member.Name, SymbolToName(type), "")
+        : this(
+            member.Name,
+            SymbolToName(type),
+            "",
+            Utils.IsNullable(type),
+            Utils.IsNullableReferenceType(type)
+        )
     {
         try
         {
@@ -40,14 +52,14 @@ public record MemberDeclaration(string Name, string Type, string TypeInfo)
     {
         var visStr = SyntaxFacts.GetText(visibility);
         return string.Join(
-            "\n",
+            "\n        ",
             members.Select(m => $"{visStr} static readonly {m.TypeInfo} {m.Name} = new();")
         );
     }
 
     public static string GenerateDefs(IEnumerable<MemberDeclaration> members) =>
         string.Join(
-            ",\n",
+            ",\n                ",
             members.Select(m => $"new(nameof({m.Name}), {m.Name}.GetAlgebraicType(registrar))")
         );
 }
@@ -148,8 +160,7 @@ public abstract record BaseTypeDeclaration<M>
 
         var extensions = new Scope.Extensions(Scope, FullName);
 
-        var bsatnDeclsWithoutTag = Members.Cast<MemberDeclaration>();
-        var bsatnDecls = bsatnDeclsWithoutTag;
+        var bsatnDecls = Members.Cast<MemberDeclaration>();
         var fieldNames = bsatnDecls.Select(m => m.Name);
 
         extensions.BaseTypes.Add($"System.IEquatable<{ShortName}>");
@@ -158,19 +169,15 @@ public abstract record BaseTypeDeclaration<M>
         {
             extensions.Contents.Append(
                 $$"""
-                private {{ShortName}}() { }
+                    private {{ShortName}}() { }
 
-                internal enum @enum: byte
-                {
-                    {{string.Join(",\n", fieldNames)}}
-                }
+                    internal enum @enum: byte
+                    {
+                        {{string.Join(",\n    ", fieldNames)}}
+                    }
+                
                 """
             );
-
-            bsatnDecls = bsatnDecls.Prepend(
-                new("__enumTag", "@enum", "SpacetimeDB.BSATN.Enum<@enum>")
-            );
-
             extensions.Contents.Append(
                 string.Join(
                     "\n",
@@ -178,65 +185,86 @@ public abstract record BaseTypeDeclaration<M>
                         // C# puts field names in the same namespace as records themselves, and will complain about clashes if they match.
                         // To avoid this, we append an underscore to the field name.
                         // In most cases the field name shouldn't matter anyway as you'll idiomatically use pattern matching to extract the value.
-                        $"public sealed record {m.Name}({m.Type} {m.Name}_) : {ShortName};"
+                        $"    public sealed record {m.Name}({m.Type} {m.Name}_) : {ShortName};"
                     )
                 )
             );
 
             read = $$"""
-                __enumTag.Read(reader) switch {
-                    {{string.Join(
-                        "\n",
-                        fieldNames.Select(name =>
-                            $"@enum.{name} => new {name}({name}.Read(reader)),"
-                        )
-                    )}}
-                    _ => throw new System.InvalidOperationException("Invalid tag value, this state should be unreachable.")
-                }
-                """;
+                    __enumTag.Read(reader) switch {
+                        {{string.Join(
+                            "\n            ",
+                            fieldNames.Select(name =>
+                                $"@enum.{name} => new {name}({name}.Read(reader)),"
+                            )
+                        )}}
+                        _ => throw new System.InvalidOperationException("Invalid tag value, this state should be unreachable.")
+                    }
+            """;
 
             write = $$"""
-                switch (value) {
-                    {{string.Join(
-                        "\n",
-                        fieldNames.Select(name => $"""
+            switch (value) {
+            {{string.Join(
+                "\n",
+                fieldNames.Select(name => $"""
                             case {name}(var inner):
                                 __enumTag.Write(writer, @enum.{name});
                                 {name}.Write(writer, inner);
                                 break;
-                            """)
-                    )}}
-                }
-                """;
+                """))}}
+                        }
+            """;
 
             getHashCode = $$"""
-                switch (this) {
-                {{string.Join(
-                        "\n",
-                        bsatnDeclsWithoutTag.Select(decl => $"""
-                            case {decl.Name}(var inner):
-                                return inner.GetHashCode();
-                        """)
-                )}}
+            switch (this) {
+            {{string.Join(
+                    "\n",
+                    bsatnDecls
+                    .Select(member =>
+                    {
+                        string innerGetHash;
+
+                        if (member.IsNullableReferenceType)
+                        {
+                            innerGetHash = "inner == null ? 0 : inner.GetHashCode()";
+                        }
+                        else if (member.IsNullable)
+                        {
+                            innerGetHash = "inner.HasValue ? inner.Value.GetHashCode() : 0";
+                        }
+                        else
+                        {
+                            innerGetHash = "inner.GetHashCode()";
+                        }
+
+                        return $"""
+                                case {member.Name}(var inner):
+                                    return {innerGetHash};
+                        """;
+                    }))}}
                     default:
                         return 0;
-                }
-                """;
+                    }
+            """;
 
             toString = $$"""
-                switch (this) {
-                {{string.Join(
-                        "\n",
-                        // escaped enough for you?
-                        fieldNames.Select(name => $$$"""
+            switch (this) {
+            {{string.Join(
+                    "\n",
+                    // escaped enough for you?
+                    fieldNames.Select(name => $$$"""
                             case {{{name}}}(var inner):
                                 return $"{{{name}}}({inner})";
-                        """)
+                    """)
                 )}}
                     default:
                         return "UNKNOWN";
                 }
-                """;
+            """;
+
+            bsatnDecls = bsatnDecls.Prepend(
+                new("__enumTag", "@enum", "SpacetimeDB.BSATN.Enum<@enum>", false, false)
+            );
         }
         else
         {
@@ -253,22 +281,36 @@ public abstract record BaseTypeDeclaration<M>
 
                 public void WriteFields(System.IO.BinaryWriter writer) {
                     {{string.Join(
-                        "\n",
+                        "\n        ",
                         fieldNames.Select(name => $"BSATN.{name}.Write(writer, {name});")
                     )}}
                 }
-                """
-                );
+
+            """
+            );
 
             read = $"SpacetimeDB.BSATN.IStructuralReadWrite.Read<{FullName}>(reader)";
 
             write = "value.WriteFields(writer);";
 
-
             getHashCode = $$"""
                 return {{string.Join(
                     " ^\n",
-                    fieldNames.Select(name => $"{name}.GetHashCode()")
+                    bsatnDecls.Select(decl =>
+                    {
+                        if (decl.IsNullableReferenceType)
+                        {
+                            return $"({decl.Name} == null ? 0 : {decl.Name}.GetHashCode())";
+                        }
+                        else if (decl.IsNullable)
+                        {
+                            return $"({decl.Name}.HasValue ? {decl.Name}.Value.GetHashCode() : 0)";
+                        }
+                        else
+                        {
+                            return $"{decl.Name}.GetHashCode()";
+                        }
+                    })
                 )}};
                 """;
 
@@ -279,39 +321,40 @@ public abstract record BaseTypeDeclaration<M>
                     ", ",
                     fieldNames.Select(name => $$"""{{name}} = { {{name}} }""")
                 )}}";
-                """;
+        """;
         }
 
         extensions.Contents.Append(
             $$"""
-            public readonly partial struct BSATN : SpacetimeDB.BSATN.IReadWrite<{{FullName}}>
-            {
-                {{MemberDeclaration.GenerateBsatnFields(Accessibility.Internal, bsatnDecls)}}
 
-                public {{FullName}} Read(System.IO.BinaryReader reader) => {{read}};
+                public readonly partial struct BSATN : SpacetimeDB.BSATN.IReadWrite<{{FullName}}>
+                {
+                    {{MemberDeclaration.GenerateBsatnFields(Accessibility.Internal, bsatnDecls)}}
 
-                public void Write(System.IO.BinaryWriter writer, {{FullName}} value) {
-                    {{write}}
+                    public {{FullName}} Read(System.IO.BinaryReader reader) => {{read}};
+
+                    public void Write(System.IO.BinaryWriter writer, {{FullName}} value) {
+                        {{write}}
+                    }
+
+                    public SpacetimeDB.BSATN.AlgebraicType.Ref GetAlgebraicType(SpacetimeDB.BSATN.ITypeRegistrar registrar) =>
+                        registrar.RegisterType<{{FullName}}>(_ => new SpacetimeDB.BSATN.AlgebraicType.{{Kind}}(new SpacetimeDB.BSATN.AggregateElement[] {
+                            {{MemberDeclaration.GenerateDefs(Members)}}
+                        }));
+
+                    SpacetimeDB.BSATN.AlgebraicType SpacetimeDB.BSATN.IReadWrite<{{FullName}}>.GetAlgebraicType(SpacetimeDB.BSATN.ITypeRegistrar registrar) =>
+                        GetAlgebraicType(registrar);
+                }
+                
+                public override int GetHashCode()
+                {
+                    {{getHashCode}}
                 }
 
-                public SpacetimeDB.BSATN.AlgebraicType.Ref GetAlgebraicType(SpacetimeDB.BSATN.ITypeRegistrar registrar) =>
-                    registrar.RegisterType<{{FullName}}>(_ => new SpacetimeDB.BSATN.AlgebraicType.{{Kind}}(new SpacetimeDB.BSATN.AggregateElement[] {
-                        {{MemberDeclaration.GenerateDefs(Members)}}
-                    }));
-
-                SpacetimeDB.BSATN.AlgebraicType SpacetimeDB.BSATN.IReadWrite<{{FullName}}>.GetAlgebraicType(SpacetimeDB.BSATN.ITypeRegistrar registrar) =>
-                    GetAlgebraicType(registrar);
-            }
-
+                public override string ToString() {
+                    {{toString}}
+                }
             
-            public override int GetHashCode()
-            {
-                {{getHashCode}}
-            }
-
-            public override string ToString() {
-                {{toString}}
-            }
             """
         );
 
@@ -319,14 +362,29 @@ public abstract record BaseTypeDeclaration<M>
         {
             // If we're not a record, override various equality things.
 
-            var equalsOverride = Scope.IsStruct ? "" : "override";
+            var equalsOverride = Scope.IsStruct ? "" : "override ";
 
-            extensions.Contents.Append($$"""
-                public {{equalsOverride}} bool Equals({{FullName}} that)
+            extensions.Contents.Append(
+                $$"""
+                public {{equalsOverride}}bool Equals({{FullName}} that)
                 {
                     return {{string.Join(
                         " &&\n",
-                        fieldNames.Select(name => $"{name}.Equals(that.{name})")
+                        bsatnDecls.Select(member =>
+                        {
+                            if (member.IsNullableReferenceType)
+                            {
+                                return $"({member.Name} == null ? that.{member.Name} == null : {member.Name}.Equals(that.{member.Name}))";
+                            }
+                            else if (member.IsNullable)
+                            {
+                                return $"({member.Name}.HasValue ? {member.Name}.Equals(that.{member.Name}) : !that.{member.Name}.HasValue)";
+                            }
+                            else
+                            {
+                                return $"{member.Name}.Equals(that.{member.Name})";
+                            }
+                        })
                     )}};
                 }
 
@@ -351,7 +409,8 @@ public abstract record BaseTypeDeclaration<M>
                 public static bool operator != ({{FullName}} this_, {{FullName}} that) {
                     return !(this_ == that);
                 }
-            """);
+            """
+            );
         }
 
         return extensions;

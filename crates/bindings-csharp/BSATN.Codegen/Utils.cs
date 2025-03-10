@@ -73,8 +73,10 @@ public static class Utils
     public static string MakeRwTypeParam(string typeParam) => typeParam + "RW";
 
     public class UnresolvedTypeException(INamedTypeSymbol type)
-        : InvalidOperationException($"Could not resolve type {type}")
-    { }
+        : InvalidOperationException($"Could not resolve type {type}") { }
+
+    public static bool IsNullable(ITypeSymbol type) =>
+        type.NullableAnnotation == NullableAnnotation.Annotated;
 
     /// <summary>
     /// Return whether a type is a nullable, non-value type.
@@ -82,18 +84,15 @@ public static class Utils
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    public static bool IsNullableNonValueType(ITypeSymbol type)
-    {
+    public static bool IsNullableReferenceType(ITypeSymbol type) =>
         // We need to distinguish handle nullable reference types specially:
         // compiler expands something like `int?` to `System.Nullable<int>` with the nullable annotation set to `Annotated`
-        // while something like `string?` is expanded to `string` with the nullable annotation set to `Annotated`...
-        // Beautiful design requires beautiful hacks.
-        return type.NullableAnnotation == NullableAnnotation.Annotated
-            && type.OriginalDefinition.SpecialType != SpecialType.System_Nullable_T;
-    }
+        // while something like `string?` is expanded to `string` with the nullable annotation set to `Annotated`.
+        type.NullableAnnotation == NullableAnnotation.Annotated
+        && type.OriginalDefinition.SpecialType != SpecialType.System_Nullable_T;
 
     /// <summary>
-    /// Get the BSATN struct name for a type. 
+    /// Get the BSATN struct name for a type.
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
@@ -101,7 +100,7 @@ public static class Utils
     /// <exception cref="UnresolvedTypeException"></exception>
     public static string GetTypeInfo(ITypeSymbol type)
     {
-        if (IsNullableNonValueType(type))
+        if (IsNullableReferenceType(type))
         {
             // If we're here, then this is a nullable reference type like `string?` and the original definition is `string`.
             type = type.WithNullableAnnotation(NullableAnnotation.None);
