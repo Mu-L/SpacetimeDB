@@ -60,7 +60,7 @@ partial struct BTreeMultiColumn
 
     public override string ToString()
     {
-        return $"BTreeMultiColumn(X = {X}, Y = {Y}, Z = {Z}";
+        return $"BTreeMultiColumn(X = {X}, Y = {Y}, Z = {Z})";
     }
 
     public bool Equals(BTreeMultiColumn that)
@@ -75,24 +75,28 @@ partial struct BTreeMultiColumn
             return false;
         }
         var that_ = that as BTreeMultiColumn?;
-        if (that_ == null)
+        if (((object?)that_) == null)
         {
             return false;
         }
-        return Equals(that);
+        return Equals(that_);
     }
 
     public static bool operator ==(BTreeMultiColumn this_, BTreeMultiColumn that)
     {
         if (((object)this_) == null || ((object)that) == null)
         {
-            return Object.Equals(this_, that);
+            return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
     public static bool operator !=(BTreeMultiColumn this_, BTreeMultiColumn that)
     {
-        return !(this_ == that);
+        if (((object)this_) == null || ((object)that) == null)
+        {
+            return !object.Equals(this_, that);
+        }
+        return !this_.Equals(that);
     }
 } // BTreeMultiColumn

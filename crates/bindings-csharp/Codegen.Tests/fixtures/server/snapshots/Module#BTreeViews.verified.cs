@@ -60,7 +60,7 @@ partial struct BTreeViews : System.IEquatable<BTreeViews>, SpacetimeDB.BSATN.ISt
 
     public override string ToString()
     {
-        return $"BTreeViews(Id = {Id}, X = {X}, Y = {Y}, Faction = {Faction}";
+        return $"BTreeViews(Id = {Id}, X = {X}, Y = {Y}, Faction = {Faction})";
     }
 
     public bool Equals(BTreeViews that)
@@ -78,24 +78,28 @@ partial struct BTreeViews : System.IEquatable<BTreeViews>, SpacetimeDB.BSATN.ISt
             return false;
         }
         var that_ = that as BTreeViews?;
-        if (that_ == null)
+        if (((object?)that_) == null)
         {
             return false;
         }
-        return Equals(that);
+        return Equals(that_);
     }
 
     public static bool operator ==(BTreeViews this_, BTreeViews that)
     {
         if (((object)this_) == null || ((object)that) == null)
         {
-            return Object.Equals(this_, that);
+            return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
     public static bool operator !=(BTreeViews this_, BTreeViews that)
     {
-        return !(this_ == that);
+        if (((object)this_) == null || ((object)that) == null)
+        {
+            return !object.Equals(this_, that);
+        }
+        return !this_.Equals(that);
     }
 } // BTreeViews

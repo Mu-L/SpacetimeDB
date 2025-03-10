@@ -11,6 +11,8 @@ public partial struct CustomStruct
     public static readonly string IGNORE_ME_TOO = "";
     public int IntField;
     public string StringField;
+    public int? NullableIntField;
+    public string? NullableStringField;
 }
 
 [SpacetimeDB.Type]
@@ -20,6 +22,8 @@ public partial class CustomClass
     public static readonly string IGNORE_ME_TOO = "";
     public int IntField = 0;
     public string StringField = "";
+    public int? NullableIntField;
+    public string? NullableStringField;
 }
 
 [StructLayout(LayoutKind.Auto)]
@@ -27,6 +31,15 @@ public partial class CustomClass
 {
     public int IgnoreExtraFields;
 }
+
+[SpacetimeDB.Type]
+public partial class EmptyClass { }
+
+[SpacetimeDB.Type]
+public partial struct EmptyStruct { }
+
+[SpacetimeDB.Type]
+public partial record EmptyRecord { }
 
 [SpacetimeDB.Type]
 public enum CustomEnum
@@ -37,7 +50,12 @@ public enum CustomEnum
 
 [SpacetimeDB.Type]
 public partial record CustomTaggedEnum
-    : SpacetimeDB.TaggedEnum<(int IntVariant, string StringVariant)>;
+    : SpacetimeDB.TaggedEnum<(
+        int IntVariant,
+        string StringVariant,
+        int? NullableIntVariant,
+        string? NullableStringVariant
+    )>;
 
 [SpacetimeDB.Table]
 public partial class PrivateTable { }

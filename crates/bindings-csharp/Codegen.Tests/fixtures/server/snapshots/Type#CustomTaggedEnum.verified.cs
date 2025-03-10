@@ -9,24 +9,41 @@ partial record CustomTaggedEnum : System.IEquatable<CustomTaggedEnum>
     internal enum @enum : byte
     {
         IntVariant,
-        StringVariant
+        StringVariant,
+        NullableIntVariant,
+        NullableStringVariant
     }
 
     public sealed record IntVariant(int IntVariant_) : CustomTaggedEnum;
 
     public sealed record StringVariant(string StringVariant_) : CustomTaggedEnum;
 
+    public sealed record NullableIntVariant(int? NullableIntVariant_) : CustomTaggedEnum;
+
+    public sealed record NullableStringVariant(string? NullableStringVariant_) : CustomTaggedEnum;
+
     public readonly partial struct BSATN : SpacetimeDB.BSATN.IReadWrite<CustomTaggedEnum>
     {
         internal static readonly SpacetimeDB.BSATN.Enum<@enum> __enumTag = new();
         internal static readonly SpacetimeDB.BSATN.I32 IntVariant = new();
         internal static readonly SpacetimeDB.BSATN.String StringVariant = new();
+        internal static readonly SpacetimeDB.BSATN.ValueOption<
+            int,
+            SpacetimeDB.BSATN.I32
+        > NullableIntVariant = new();
+        internal static readonly SpacetimeDB.BSATN.RefOption<
+            string,
+            SpacetimeDB.BSATN.String
+        > NullableStringVariant = new();
 
         public CustomTaggedEnum Read(System.IO.BinaryReader reader) =>
             __enumTag.Read(reader) switch
             {
                 @enum.IntVariant => new IntVariant(IntVariant.Read(reader)),
                 @enum.StringVariant => new StringVariant(StringVariant.Read(reader)),
+                @enum.NullableIntVariant => new NullableIntVariant(NullableIntVariant.Read(reader)),
+                @enum.NullableStringVariant
+                    => new NullableStringVariant(NullableStringVariant.Read(reader)),
                 _
                     => throw new System.InvalidOperationException(
                         "Invalid tag value, this state should be unreachable."
@@ -45,6 +62,14 @@ partial record CustomTaggedEnum : System.IEquatable<CustomTaggedEnum>
                     __enumTag.Write(writer, @enum.StringVariant);
                     StringVariant.Write(writer, inner);
                     break;
+                case NullableIntVariant(var inner):
+                    __enumTag.Write(writer, @enum.NullableIntVariant);
+                    NullableIntVariant.Write(writer, inner);
+                    break;
+                case NullableStringVariant(var inner):
+                    __enumTag.Write(writer, @enum.NullableStringVariant);
+                    NullableStringVariant.Write(writer, inner);
+                    break;
             }
         }
 
@@ -55,7 +80,12 @@ partial record CustomTaggedEnum : System.IEquatable<CustomTaggedEnum>
                 new SpacetimeDB.BSATN.AggregateElement[]
                 {
                     new(nameof(IntVariant), IntVariant.GetAlgebraicType(registrar)),
-                    new(nameof(StringVariant), StringVariant.GetAlgebraicType(registrar))
+                    new(nameof(StringVariant), StringVariant.GetAlgebraicType(registrar)),
+                    new(nameof(NullableIntVariant), NullableIntVariant.GetAlgebraicType(registrar)),
+                    new(
+                        nameof(NullableStringVariant),
+                        NullableStringVariant.GetAlgebraicType(registrar)
+                    )
                 }
             ));
 
@@ -72,6 +102,10 @@ partial record CustomTaggedEnum : System.IEquatable<CustomTaggedEnum>
                 return inner.GetHashCode();
             case StringVariant(var inner):
                 return inner.GetHashCode();
+            case NullableIntVariant(var inner):
+                return inner.GetHashCode();
+            case NullableStringVariant(var inner):
+                return inner == null ? 0 : inner.GetHashCode();
             default:
                 return 0;
         }
@@ -85,6 +119,10 @@ partial record CustomTaggedEnum : System.IEquatable<CustomTaggedEnum>
                 return $"IntVariant({inner})";
             case StringVariant(var inner):
                 return $"StringVariant({inner})";
+            case NullableIntVariant(var inner):
+                return $"NullableIntVariant({inner})";
+            case NullableStringVariant(var inner):
+                return $"NullableStringVariant({inner})";
             default:
                 return "UNKNOWN";
         }

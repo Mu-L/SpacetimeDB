@@ -53,7 +53,7 @@ partial struct TestTypeParams<T>
 
     public override string ToString()
     {
-        return $"TestTypeParams(Field = {Field}";
+        return $"TestTypeParams(Field = {Field})";
     }
 
     public bool Equals(TestTypeParams<T> that)
@@ -68,24 +68,28 @@ partial struct TestTypeParams<T>
             return false;
         }
         var that_ = that as TestTypeParams<T>?;
-        if (that_ == null)
+        if (((object?)that_) == null)
         {
             return false;
         }
-        return Equals(that);
+        return Equals(that_);
     }
 
     public static bool operator ==(TestTypeParams<T> this_, TestTypeParams<T> that)
     {
         if (((object)this_) == null || ((object)that) == null)
         {
-            return Object.Equals(this_, that);
+            return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
     public static bool operator !=(TestTypeParams<T> this_, TestTypeParams<T> that)
     {
-        return !(this_ == that);
+        if (((object)this_) == null || ((object)that) == null)
+        {
+            return !object.Equals(this_, that);
+        }
+        return !this_.Equals(that);
     }
 } // TestTypeParams<T>

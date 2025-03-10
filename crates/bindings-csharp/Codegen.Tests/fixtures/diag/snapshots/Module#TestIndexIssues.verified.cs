@@ -55,7 +55,7 @@ partial struct TestIndexIssues
 
     public override string ToString()
     {
-        return $"TestIndexIssues(SelfIndexingColumn = {SelfIndexingColumn}";
+        return $"TestIndexIssues(SelfIndexingColumn = {SelfIndexingColumn})";
     }
 
     public bool Equals(TestIndexIssues that)
@@ -70,24 +70,28 @@ partial struct TestIndexIssues
             return false;
         }
         var that_ = that as TestIndexIssues?;
-        if (that_ == null)
+        if (((object?)that_) == null)
         {
             return false;
         }
-        return Equals(that);
+        return Equals(that_);
     }
 
     public static bool operator ==(TestIndexIssues this_, TestIndexIssues that)
     {
         if (((object)this_) == null || ((object)that) == null)
         {
-            return Object.Equals(this_, that);
+            return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
     public static bool operator !=(TestIndexIssues this_, TestIndexIssues that)
     {
-        return !(this_ == that);
+        if (((object)this_) == null || ((object)that) == null)
+        {
+            return !object.Equals(this_, that);
+        }
+        return !this_.Equals(that);
     }
 } // TestIndexIssues

@@ -36,17 +36,17 @@ partial struct TestDuplicateTableName
 
     public override int GetHashCode()
     {
-        return;
+        return 0;
     }
 
     public override string ToString()
     {
-        return $"TestDuplicateTableName(";
+        return $"TestDuplicateTableName()";
     }
 
     public bool Equals(TestDuplicateTableName that)
     {
-        return;
+        return true;
     }
 
     public override bool Equals(object? that)
@@ -56,24 +56,28 @@ partial struct TestDuplicateTableName
             return false;
         }
         var that_ = that as TestDuplicateTableName?;
-        if (that_ == null)
+        if (((object?)that_) == null)
         {
             return false;
         }
-        return Equals(that);
+        return Equals(that_);
     }
 
     public static bool operator ==(TestDuplicateTableName this_, TestDuplicateTableName that)
     {
         if (((object)this_) == null || ((object)that) == null)
         {
-            return Object.Equals(this_, that);
+            return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
     public static bool operator !=(TestDuplicateTableName this_, TestDuplicateTableName that)
     {
-        return !(this_ == that);
+        if (((object)this_) == null || ((object)that) == null)
+        {
+            return !object.Equals(this_, that);
+        }
+        return !this_.Equals(that);
     }
 } // TestDuplicateTableName

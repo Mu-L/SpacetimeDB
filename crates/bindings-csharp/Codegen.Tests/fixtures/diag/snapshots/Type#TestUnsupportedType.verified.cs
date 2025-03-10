@@ -75,7 +75,7 @@ partial struct TestUnsupportedType
 
     public override string ToString()
     {
-        return $"TestUnsupportedType(UnsupportedSpecialType = {UnsupportedSpecialType}, UnsupportedSystemType = {UnsupportedSystemType}, UnresolvedType = {UnresolvedType}, UnsupportedEnum = {UnsupportedEnum}";
+        return $"TestUnsupportedType(UnsupportedSpecialType = {UnsupportedSpecialType}, UnsupportedSystemType = {UnsupportedSystemType}, UnresolvedType = {UnresolvedType}, UnsupportedEnum = {UnsupportedEnum})";
     }
 
     public bool Equals(TestUnsupportedType that)
@@ -93,24 +93,28 @@ partial struct TestUnsupportedType
             return false;
         }
         var that_ = that as TestUnsupportedType?;
-        if (that_ == null)
+        if (((object?)that_) == null)
         {
             return false;
         }
-        return Equals(that);
+        return Equals(that_);
     }
 
     public static bool operator ==(TestUnsupportedType this_, TestUnsupportedType that)
     {
         if (((object)this_) == null || ((object)that) == null)
         {
-            return Object.Equals(this_, that);
+            return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
     public static bool operator !=(TestUnsupportedType this_, TestUnsupportedType that)
     {
-        return !(this_ == that);
+        if (((object)this_) == null || ((object)that) == null)
+        {
+            return !object.Equals(this_, that);
+        }
+        return !this_.Equals(that);
     }
 } // TestUnsupportedType

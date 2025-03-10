@@ -58,7 +58,7 @@ partial struct MultiTableRow
 
     public override string ToString()
     {
-        return $"MultiTableRow(Name = {Name}, Foo = {Foo}, Bar = {Bar}";
+        return $"MultiTableRow(Name = {Name}, Foo = {Foo}, Bar = {Bar})";
     }
 
     public bool Equals(MultiTableRow that)
@@ -73,24 +73,28 @@ partial struct MultiTableRow
             return false;
         }
         var that_ = that as MultiTableRow?;
-        if (that_ == null)
+        if (((object?)that_) == null)
         {
             return false;
         }
-        return Equals(that);
+        return Equals(that_);
     }
 
     public static bool operator ==(MultiTableRow this_, MultiTableRow that)
     {
         if (((object)this_) == null || ((object)that) == null)
         {
-            return Object.Equals(this_, that);
+            return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
     public static bool operator !=(MultiTableRow this_, MultiTableRow that)
     {
-        return !(this_ == that);
+        if (((object)this_) == null || ((object)that) == null)
+        {
+            return !object.Equals(this_, that);
+        }
+        return !this_.Equals(that);
     }
 } // MultiTableRow

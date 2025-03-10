@@ -10,18 +10,11 @@ public record MemberDeclaration(
     string Name,
     string Type,
     string TypeInfo,
-    bool IsNullable,
     bool IsNullableReferenceType
 )
 {
     public MemberDeclaration(ISymbol member, ITypeSymbol type, DiagReporter diag)
-        : this(
-            member.Name,
-            SymbolToName(type),
-            "",
-            Utils.IsNullable(type),
-            Utils.IsNullableReferenceType(type)
-        )
+        : this(member.Name, SymbolToName(type), "", Utils.IsNullableReferenceType(type))
     {
         try
         {
@@ -151,6 +144,15 @@ public abstract record BaseTypeDeclaration<M>
         );
     }
 
+    public static string JoinOrElse(string join, IEnumerable<String> joinands, string baseCase)
+    {
+        if (joinands.Any())
+        {
+            return string.Join(join, joinands);
+        }
+        return baseCase;
+    }
+
     public Scope.Extensions ToExtensions()
     {
         string read,
@@ -173,7 +175,7 @@ public abstract record BaseTypeDeclaration<M>
 
                     internal enum @enum: byte
                     {
-                        {{string.Join(",\n    ", fieldNames)}}
+                        {{string.Join(",\n        ", fieldNames)}}
                     }
                 
                 """
@@ -228,10 +230,6 @@ public abstract record BaseTypeDeclaration<M>
                         {
                             innerGetHash = "inner == null ? 0 : inner.GetHashCode()";
                         }
-                        else if (member.IsNullable)
-                        {
-                            innerGetHash = "inner.HasValue ? inner.Value.GetHashCode() : 0";
-                        }
                         else
                         {
                             innerGetHash = "inner.GetHashCode()";
@@ -263,7 +261,7 @@ public abstract record BaseTypeDeclaration<M>
             """;
 
             bsatnDecls = bsatnDecls.Prepend(
-                new("__enumTag", "@enum", "SpacetimeDB.BSATN.Enum<@enum>", false, false)
+                new("__enumTag", "@enum", "SpacetimeDB.BSATN.Enum<@enum>", false)
             );
         }
         else
@@ -273,19 +271,18 @@ public abstract record BaseTypeDeclaration<M>
             extensions.Contents.Append(
                 $$"""
                 public void ReadFields(System.IO.BinaryReader reader) {
-                    {{string.Join(
-                        "\n",
-                        fieldNames.Select(name => $"{name} = BSATN.{name}.Read(reader);")
-                    )}}
+            {{string.Join(
+                    "\n",
+                    fieldNames.Select(name => $"        {name} = BSATN.{name}.Read(reader);")
+                )}}
                 }
 
                 public void WriteFields(System.IO.BinaryWriter writer) {
-                    {{string.Join(
-                        "\n        ",
-                        fieldNames.Select(name => $"BSATN.{name}.Write(writer, {name});")
-                    )}}
+            {{string.Join(
+                    "\n",
+                    fieldNames.Select(name => $"        BSATN.{name}.Write(writer, {name});")
+                )}}
                 }
-
             """
             );
 
@@ -294,23 +291,20 @@ public abstract record BaseTypeDeclaration<M>
             write = "value.WriteFields(writer);";
 
             getHashCode = $$"""
-                return {{string.Join(
-                    " ^\n",
+                return {{JoinOrElse(
+                    " ^\n            ",
                     bsatnDecls.Select(decl =>
                     {
                         if (decl.IsNullableReferenceType)
                         {
                             return $"({decl.Name} == null ? 0 : {decl.Name}.GetHashCode())";
                         }
-                        else if (decl.IsNullable)
-                        {
-                            return $"({decl.Name}.HasValue ? {decl.Name}.Value.GetHashCode() : 0)";
-                        }
                         else
                         {
                             return $"{decl.Name}.GetHashCode()";
                         }
-                    })
+                    }),
+                    "0" // if there are no members, the hash is 0.
                 )}};
                 """;
 
@@ -320,7 +314,7 @@ public abstract record BaseTypeDeclaration<M>
                 return $"{{ShortName}}({{string.Join(
                     ", ",
                     fieldNames.Select(name => $$"""{{name}} = { {{name}} }""")
-                )}}";
+                )}})";
         """;
         }
 
@@ -362,29 +356,29 @@ public abstract record BaseTypeDeclaration<M>
         {
             // If we're not a record, override various equality things.
 
-            var equalsOverride = Scope.IsStruct ? "" : "override ";
+            var equalsDecl = Scope.IsStruct
+                ? $"public bool Equals({FullName} that)"
+                : $"public bool Equals({FullName}? that)";
 
             extensions.Contents.Append(
                 $$"""
-                public {{equalsOverride}}bool Equals({{FullName}} that)
+                {{equalsDecl}}
                 {
-                    return {{string.Join(
-                        " &&\n",
+                    {{(Scope.IsStruct ? "" : "if (((object?)that) == null) { return false; }")}}
+                     return {{JoinOrElse(
+                        " &&\n        ",
                         bsatnDecls.Select(member =>
                         {
                             if (member.IsNullableReferenceType)
                             {
                                 return $"({member.Name} == null ? that.{member.Name} == null : {member.Name}.Equals(that.{member.Name}))";
                             }
-                            else if (member.IsNullable)
-                            {
-                                return $"({member.Name}.HasValue ? {member.Name}.Equals(that.{member.Name}) : !that.{member.Name}.HasValue)";
-                            }
                             else
                             {
                                 return $"{member.Name}.Equals(that.{member.Name})";
                             }
-                        })
+                        }),
+                        "true" // if there are no elements, the structs are equal :)
                     )}};
                 }
 
@@ -392,22 +386,25 @@ public abstract record BaseTypeDeclaration<M>
                     if (that == null) {
                         return false;
                     }
-                    var that_ = that as {{FullName}}?;
-                    if (that_ == null) {
+                    var that_ = that as {{FullName}}{{(Scope.IsStruct ? "?" : "")}};
+                    if (((object?)that_) == null) {
                         return false;
                     }
-                    return Equals(that);
+                    return Equals(that_);
                 }
 
                 public static bool operator == ({{FullName}} this_, {{FullName}} that) {
                     if (((object)this_) == null || ((object)that) == null) {
-                        return Object.Equals(this_, that);
+                        return object.Equals(this_, that);
                     }
                     return this_.Equals(that);
                 }
 
                 public static bool operator != ({{FullName}} this_, {{FullName}} that) {
-                    return !(this_ == that);
+                    if (((object)this_) == null || ((object)that) == null) {
+                        return !object.Equals(this_, that);
+                    }
+                    return !this_.Equals(that);
                 }
             """
             );

@@ -190,13 +190,13 @@ partial struct PublicTable : System.IEquatable<PublicTable>, SpacetimeDB.BSATN.I
             ^ CustomEnumField.GetHashCode()
             ^ CustomTaggedEnumField.GetHashCode()
             ^ ListField.GetHashCode()
-            ^ (NullableValueField.HasValue ? NullableValueField.Value.GetHashCode() : 0)
+            ^ NullableValueField.GetHashCode()
             ^ (NullableReferenceField == null ? 0 : NullableReferenceField.GetHashCode());
     }
 
     public override string ToString()
     {
-        return $"PublicTable(Id = {Id}, ByteField = {ByteField}, UshortField = {UshortField}, UintField = {UintField}, UlongField = {UlongField}, UInt128Field = {UInt128Field}, U128Field = {U128Field}, U256Field = {U256Field}, SbyteField = {SbyteField}, ShortField = {ShortField}, IntField = {IntField}, LongField = {LongField}, Int128Field = {Int128Field}, I128Field = {I128Field}, I256Field = {I256Field}, BoolField = {BoolField}, FloatField = {FloatField}, DoubleField = {DoubleField}, StringField = {StringField}, IdentityField = {IdentityField}, ConnectionIdField = {ConnectionIdField}, CustomStructField = {CustomStructField}, CustomClassField = {CustomClassField}, CustomEnumField = {CustomEnumField}, CustomTaggedEnumField = {CustomTaggedEnumField}, ListField = {ListField}, NullableValueField = {NullableValueField}, NullableReferenceField = {NullableReferenceField}";
+        return $"PublicTable(Id = {Id}, ByteField = {ByteField}, UshortField = {UshortField}, UintField = {UintField}, UlongField = {UlongField}, UInt128Field = {UInt128Field}, U128Field = {U128Field}, U256Field = {U256Field}, SbyteField = {SbyteField}, ShortField = {ShortField}, IntField = {IntField}, LongField = {LongField}, Int128Field = {Int128Field}, I128Field = {I128Field}, I256Field = {I256Field}, BoolField = {BoolField}, FloatField = {FloatField}, DoubleField = {DoubleField}, StringField = {StringField}, IdentityField = {IdentityField}, ConnectionIdField = {ConnectionIdField}, CustomStructField = {CustomStructField}, CustomClassField = {CustomClassField}, CustomEnumField = {CustomEnumField}, CustomTaggedEnumField = {CustomTaggedEnumField}, ListField = {ListField}, NullableValueField = {NullableValueField}, NullableReferenceField = {NullableReferenceField})";
     }
 
     public bool Equals(PublicTable that)
@@ -227,11 +227,7 @@ partial struct PublicTable : System.IEquatable<PublicTable>, SpacetimeDB.BSATN.I
             && CustomEnumField.Equals(that.CustomEnumField)
             && CustomTaggedEnumField.Equals(that.CustomTaggedEnumField)
             && ListField.Equals(that.ListField)
-            && (
-                NullableValueField.HasValue
-                    ? NullableValueField.Equals(that.NullableValueField)
-                    : !that.NullableValueField.HasValue
-            )
+            && NullableValueField.Equals(that.NullableValueField)
             && (
                 NullableReferenceField == null
                     ? that.NullableReferenceField == null
@@ -246,24 +242,28 @@ partial struct PublicTable : System.IEquatable<PublicTable>, SpacetimeDB.BSATN.I
             return false;
         }
         var that_ = that as PublicTable?;
-        if (that_ == null)
+        if (((object?)that_) == null)
         {
             return false;
         }
-        return Equals(that);
+        return Equals(that_);
     }
 
     public static bool operator ==(PublicTable this_, PublicTable that)
     {
         if (((object)this_) == null || ((object)that) == null)
         {
-            return Object.Equals(this_, that);
+            return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
     public static bool operator !=(PublicTable this_, PublicTable that)
     {
-        return !(this_ == that);
+        if (((object)this_) == null || ((object)that) == null)
+        {
+            return !object.Equals(this_, that);
+        }
+        return !this_.Equals(that);
     }
 } // PublicTable

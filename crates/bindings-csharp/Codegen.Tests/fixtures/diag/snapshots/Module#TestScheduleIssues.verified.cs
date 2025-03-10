@@ -73,7 +73,7 @@ partial struct TestScheduleIssues
 
     public override string ToString()
     {
-        return $"TestScheduleIssues(IdWrongType = {IdWrongType}, IdCorrectType = {IdCorrectType}, ScheduleAtWrongType = {ScheduleAtWrongType}, ScheduleAtCorrectType = {ScheduleAtCorrectType}";
+        return $"TestScheduleIssues(IdWrongType = {IdWrongType}, IdCorrectType = {IdCorrectType}, ScheduleAtWrongType = {ScheduleAtWrongType}, ScheduleAtCorrectType = {ScheduleAtCorrectType})";
     }
 
     public bool Equals(TestScheduleIssues that)
@@ -91,24 +91,28 @@ partial struct TestScheduleIssues
             return false;
         }
         var that_ = that as TestScheduleIssues?;
-        if (that_ == null)
+        if (((object?)that_) == null)
         {
             return false;
         }
-        return Equals(that);
+        return Equals(that_);
     }
 
     public static bool operator ==(TestScheduleIssues this_, TestScheduleIssues that)
     {
         if (((object)this_) == null || ((object)that) == null)
         {
-            return Object.Equals(this_, that);
+            return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
     public static bool operator !=(TestScheduleIssues this_, TestScheduleIssues that)
     {
-        return !(this_ == that);
+        if (((object)this_) == null || ((object)that) == null)
+        {
+            return !object.Equals(this_, that);
+        }
+        return !this_.Equals(that);
     }
 } // TestScheduleIssues

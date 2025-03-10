@@ -62,7 +62,7 @@ partial class Timers
 
         public override string ToString()
         {
-            return $"SendMessageTimer(ScheduledId = {ScheduledId}, ScheduledAt = {ScheduledAt}, Text = {Text}";
+            return $"SendMessageTimer(ScheduledId = {ScheduledId}, ScheduledAt = {ScheduledAt}, Text = {Text})";
         }
 
         public bool Equals(Timers.SendMessageTimer that)
@@ -79,25 +79,29 @@ partial class Timers
                 return false;
             }
             var that_ = that as Timers.SendMessageTimer?;
-            if (that_ == null)
+            if (((object?)that_) == null)
             {
                 return false;
             }
-            return Equals(that);
+            return Equals(that_);
         }
 
         public static bool operator ==(Timers.SendMessageTimer this_, Timers.SendMessageTimer that)
         {
             if (((object)this_) == null || ((object)that) == null)
             {
-                return Object.Equals(this_, that);
+                return object.Equals(this_, that);
             }
             return this_.Equals(that);
         }
 
         public static bool operator !=(Timers.SendMessageTimer this_, Timers.SendMessageTimer that)
         {
-            return !(this_ == that);
+            if (((object)this_) == null || ((object)that) == null)
+            {
+                return !object.Equals(this_, that);
+            }
+            return !this_.Equals(that);
         }
     } // SendMessageTimer
 } // Timers

@@ -50,19 +50,3 @@ public partial record AlgebraicType
     internal static AlgebraicType MakeOption(AlgebraicType someType) =>
         new Sum([new("some", someType), new("none", Unit)]);
 }
-
-[SpacetimeDB.Type]
-internal partial struct TestStruct
-{
-    public int? NullableInt;
-}
-
-[SpacetimeDB.Type]
-internal partial record TestEnum : SpacetimeDB.TaggedEnum<(int? ThingOne, string? ThingTwo)>;
-
-[SpacetimeDB.Type]
-internal partial record TestRecord
-{
-    public int? NullableInt;
-    public string? NullableString;
-}

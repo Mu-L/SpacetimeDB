@@ -56,7 +56,7 @@ partial struct TestAutoIncNotInteger
 
     public override string ToString()
     {
-        return $"TestAutoIncNotInteger(AutoIncField = {AutoIncField}, IdentityField = {IdentityField}";
+        return $"TestAutoIncNotInteger(AutoIncField = {AutoIncField}, IdentityField = {IdentityField})";
     }
 
     public bool Equals(TestAutoIncNotInteger that)
@@ -71,24 +71,28 @@ partial struct TestAutoIncNotInteger
             return false;
         }
         var that_ = that as TestAutoIncNotInteger?;
-        if (that_ == null)
+        if (((object?)that_) == null)
         {
             return false;
         }
-        return Equals(that);
+        return Equals(that_);
     }
 
     public static bool operator ==(TestAutoIncNotInteger this_, TestAutoIncNotInteger that)
     {
         if (((object)this_) == null || ((object)that) == null)
         {
-            return Object.Equals(this_, that);
+            return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
     public static bool operator !=(TestAutoIncNotInteger this_, TestAutoIncNotInteger that)
     {
-        return !(this_ == that);
+        if (((object)this_) == null || ((object)that) == null)
+        {
+            return !object.Equals(this_, that);
+        }
+        return !this_.Equals(that);
     }
 } // TestAutoIncNotInteger

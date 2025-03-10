@@ -75,9 +75,6 @@ public static class Utils
     public class UnresolvedTypeException(INamedTypeSymbol type)
         : InvalidOperationException($"Could not resolve type {type}") { }
 
-    public static bool IsNullable(ITypeSymbol type) =>
-        type.NullableAnnotation == NullableAnnotation.Annotated;
-
     /// <summary>
     /// Return whether a type is a nullable, non-value type.
     /// For example, `string?`.

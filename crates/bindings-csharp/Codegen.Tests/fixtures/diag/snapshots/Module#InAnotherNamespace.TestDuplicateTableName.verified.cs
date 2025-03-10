@@ -44,17 +44,17 @@ partial class InAnotherNamespace
 
         public override int GetHashCode()
         {
-            return;
+            return 0;
         }
 
         public override string ToString()
         {
-            return $"TestDuplicateTableName(";
+            return $"TestDuplicateTableName()";
         }
 
         public bool Equals(InAnotherNamespace.TestDuplicateTableName that)
         {
-            return;
+            return true;
         }
 
         public override bool Equals(object? that)
@@ -64,11 +64,11 @@ partial class InAnotherNamespace
                 return false;
             }
             var that_ = that as InAnotherNamespace.TestDuplicateTableName?;
-            if (that_ == null)
+            if (((object?)that_) == null)
             {
                 return false;
             }
-            return Equals(that);
+            return Equals(that_);
         }
 
         public static bool operator ==(
@@ -78,7 +78,7 @@ partial class InAnotherNamespace
         {
             if (((object)this_) == null || ((object)that) == null)
             {
-                return Object.Equals(this_, that);
+                return object.Equals(this_, that);
             }
             return this_.Equals(that);
         }
@@ -88,7 +88,11 @@ partial class InAnotherNamespace
             InAnotherNamespace.TestDuplicateTableName that
         )
         {
-            return !(this_ == that);
+            if (((object)this_) == null || ((object)that) == null)
+            {
+                return !object.Equals(this_, that);
+            }
+            return !this_.Equals(that);
         }
     } // TestDuplicateTableName
 } // InAnotherNamespace

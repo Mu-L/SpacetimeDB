@@ -8,18 +8,30 @@ partial class CustomClass : System.IEquatable<CustomClass>, SpacetimeDB.BSATN.IS
     {
         IntField = BSATN.IntField.Read(reader);
         StringField = BSATN.StringField.Read(reader);
+        NullableIntField = BSATN.NullableIntField.Read(reader);
+        NullableStringField = BSATN.NullableStringField.Read(reader);
     }
 
     public void WriteFields(System.IO.BinaryWriter writer)
     {
         BSATN.IntField.Write(writer, IntField);
         BSATN.StringField.Write(writer, StringField);
+        BSATN.NullableIntField.Write(writer, NullableIntField);
+        BSATN.NullableStringField.Write(writer, NullableStringField);
     }
 
     public readonly partial struct BSATN : SpacetimeDB.BSATN.IReadWrite<CustomClass>
     {
         internal static readonly SpacetimeDB.BSATN.I32 IntField = new();
         internal static readonly SpacetimeDB.BSATN.String StringField = new();
+        internal static readonly SpacetimeDB.BSATN.ValueOption<
+            int,
+            SpacetimeDB.BSATN.I32
+        > NullableIntField = new();
+        internal static readonly SpacetimeDB.BSATN.RefOption<
+            string,
+            SpacetimeDB.BSATN.String
+        > NullableStringField = new();
 
         public CustomClass Read(System.IO.BinaryReader reader) =>
             SpacetimeDB.BSATN.IStructuralReadWrite.Read<CustomClass>(reader);
@@ -36,7 +48,12 @@ partial class CustomClass : System.IEquatable<CustomClass>, SpacetimeDB.BSATN.IS
                 new SpacetimeDB.BSATN.AggregateElement[]
                 {
                     new(nameof(IntField), IntField.GetAlgebraicType(registrar)),
-                    new(nameof(StringField), StringField.GetAlgebraicType(registrar))
+                    new(nameof(StringField), StringField.GetAlgebraicType(registrar)),
+                    new(nameof(NullableIntField), NullableIntField.GetAlgebraicType(registrar)),
+                    new(
+                        nameof(NullableStringField),
+                        NullableStringField.GetAlgebraicType(registrar)
+                    )
                 }
             ));
 
@@ -47,17 +64,31 @@ partial class CustomClass : System.IEquatable<CustomClass>, SpacetimeDB.BSATN.IS
 
     public override int GetHashCode()
     {
-        return IntField.GetHashCode() ^ StringField.GetHashCode();
+        return IntField.GetHashCode()
+            ^ StringField.GetHashCode()
+            ^ NullableIntField.GetHashCode()
+            ^ (NullableStringField == null ? 0 : NullableStringField.GetHashCode());
     }
 
     public override string ToString()
     {
-        return $"CustomClass(IntField = {IntField}, StringField = {StringField}";
+        return $"CustomClass(IntField = {IntField}, StringField = {StringField}, NullableIntField = {NullableIntField}, NullableStringField = {NullableStringField})";
     }
 
-    public override bool Equals(CustomClass that)
+    public bool Equals(CustomClass? that)
     {
-        return IntField.Equals(that.IntField) && StringField.Equals(that.StringField);
+        if (((object?)that) == null)
+        {
+            return false;
+        }
+        return IntField.Equals(that.IntField)
+            && StringField.Equals(that.StringField)
+            && NullableIntField.Equals(that.NullableIntField)
+            && (
+                NullableStringField == null
+                    ? that.NullableStringField == null
+                    : NullableStringField.Equals(that.NullableStringField)
+            );
     }
 
     public override bool Equals(object? that)
@@ -66,25 +97,29 @@ partial class CustomClass : System.IEquatable<CustomClass>, SpacetimeDB.BSATN.IS
         {
             return false;
         }
-        var that_ = that as CustomClass?;
-        if (that_ == null)
+        var that_ = that as CustomClass;
+        if (((object?)that_) == null)
         {
             return false;
         }
-        return Equals(that);
+        return Equals(that_);
     }
 
     public static bool operator ==(CustomClass this_, CustomClass that)
     {
         if (((object)this_) == null || ((object)that) == null)
         {
-            return Object.Equals(this_, that);
+            return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
     public static bool operator !=(CustomClass this_, CustomClass that)
     {
-        return !(this_ == that);
+        if (((object)this_) == null || ((object)that) == null)
+        {
+            return !object.Equals(this_, that);
+        }
+        return !this_.Equals(that);
     }
 } // CustomClass

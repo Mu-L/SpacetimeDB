@@ -10,18 +10,30 @@ partial struct CustomStruct
     {
         IntField = BSATN.IntField.Read(reader);
         StringField = BSATN.StringField.Read(reader);
+        NullableIntField = BSATN.NullableIntField.Read(reader);
+        NullableStringField = BSATN.NullableStringField.Read(reader);
     }
 
     public void WriteFields(System.IO.BinaryWriter writer)
     {
         BSATN.IntField.Write(writer, IntField);
         BSATN.StringField.Write(writer, StringField);
+        BSATN.NullableIntField.Write(writer, NullableIntField);
+        BSATN.NullableStringField.Write(writer, NullableStringField);
     }
 
     public readonly partial struct BSATN : SpacetimeDB.BSATN.IReadWrite<CustomStruct>
     {
         internal static readonly SpacetimeDB.BSATN.I32 IntField = new();
         internal static readonly SpacetimeDB.BSATN.String StringField = new();
+        internal static readonly SpacetimeDB.BSATN.ValueOption<
+            int,
+            SpacetimeDB.BSATN.I32
+        > NullableIntField = new();
+        internal static readonly SpacetimeDB.BSATN.RefOption<
+            string,
+            SpacetimeDB.BSATN.String
+        > NullableStringField = new();
 
         public CustomStruct Read(System.IO.BinaryReader reader) =>
             SpacetimeDB.BSATN.IStructuralReadWrite.Read<CustomStruct>(reader);
@@ -38,7 +50,12 @@ partial struct CustomStruct
                 new SpacetimeDB.BSATN.AggregateElement[]
                 {
                     new(nameof(IntField), IntField.GetAlgebraicType(registrar)),
-                    new(nameof(StringField), StringField.GetAlgebraicType(registrar))
+                    new(nameof(StringField), StringField.GetAlgebraicType(registrar)),
+                    new(nameof(NullableIntField), NullableIntField.GetAlgebraicType(registrar)),
+                    new(
+                        nameof(NullableStringField),
+                        NullableStringField.GetAlgebraicType(registrar)
+                    )
                 }
             ));
 
@@ -49,17 +66,27 @@ partial struct CustomStruct
 
     public override int GetHashCode()
     {
-        return IntField.GetHashCode() ^ StringField.GetHashCode();
+        return IntField.GetHashCode()
+            ^ StringField.GetHashCode()
+            ^ NullableIntField.GetHashCode()
+            ^ (NullableStringField == null ? 0 : NullableStringField.GetHashCode());
     }
 
     public override string ToString()
     {
-        return $"CustomStruct(IntField = {IntField}, StringField = {StringField}";
+        return $"CustomStruct(IntField = {IntField}, StringField = {StringField}, NullableIntField = {NullableIntField}, NullableStringField = {NullableStringField})";
     }
 
     public bool Equals(CustomStruct that)
     {
-        return IntField.Equals(that.IntField) && StringField.Equals(that.StringField);
+        return IntField.Equals(that.IntField)
+            && StringField.Equals(that.StringField)
+            && NullableIntField.Equals(that.NullableIntField)
+            && (
+                NullableStringField == null
+                    ? that.NullableStringField == null
+                    : NullableStringField.Equals(that.NullableStringField)
+            );
     }
 
     public override bool Equals(object? that)
@@ -69,24 +96,28 @@ partial struct CustomStruct
             return false;
         }
         var that_ = that as CustomStruct?;
-        if (that_ == null)
+        if (((object?)that_) == null)
         {
             return false;
         }
-        return Equals(that);
+        return Equals(that_);
     }
 
     public static bool operator ==(CustomStruct this_, CustomStruct that)
     {
         if (((object)this_) == null || ((object)that) == null)
         {
-            return Object.Equals(this_, that);
+            return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
     public static bool operator !=(CustomStruct this_, CustomStruct that)
     {
-        return !(this_ == that);
+        if (((object)this_) == null || ((object)that) == null)
+        {
+            return !object.Equals(this_, that);
+        }
+        return !this_.Equals(that);
     }
 } // CustomStruct

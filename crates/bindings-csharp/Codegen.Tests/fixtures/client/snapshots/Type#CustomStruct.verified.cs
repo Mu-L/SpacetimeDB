@@ -54,7 +54,7 @@ partial struct CustomStruct
 
     public override string ToString()
     {
-        return $"CustomStruct(IntField = {IntField}, StringField = {StringField}";
+        return $"CustomStruct(IntField = {IntField}, StringField = {StringField})";
     }
 
     public bool Equals(CustomStruct that)
@@ -69,24 +69,28 @@ partial struct CustomStruct
             return false;
         }
         var that_ = that as CustomStruct?;
-        if (that_ == null)
+        if (((object?)that_) == null)
         {
             return false;
         }
-        return Equals(that);
+        return Equals(that_);
     }
 
     public static bool operator ==(CustomStruct this_, CustomStruct that)
     {
         if (((object)this_) == null || ((object)that) == null)
         {
-            return Object.Equals(this_, that);
+            return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
     public static bool operator !=(CustomStruct this_, CustomStruct that)
     {
-        return !(this_ == that);
+        if (((object)this_) == null || ((object)that) == null)
+        {
+            return !object.Equals(this_, that);
+        }
+        return !this_.Equals(that);
     }
 } // CustomStruct

@@ -62,7 +62,7 @@ partial struct RegressionMultipleUniqueIndexesHadSameName
 
     public override string ToString()
     {
-        return $"RegressionMultipleUniqueIndexesHadSameName(Unique1 = {Unique1}, Unique2 = {Unique2}";
+        return $"RegressionMultipleUniqueIndexesHadSameName(Unique1 = {Unique1}, Unique2 = {Unique2})";
     }
 
     public bool Equals(RegressionMultipleUniqueIndexesHadSameName that)
@@ -77,11 +77,11 @@ partial struct RegressionMultipleUniqueIndexesHadSameName
             return false;
         }
         var that_ = that as RegressionMultipleUniqueIndexesHadSameName?;
-        if (that_ == null)
+        if (((object?)that_) == null)
         {
             return false;
         }
-        return Equals(that);
+        return Equals(that_);
     }
 
     public static bool operator ==(
@@ -91,7 +91,7 @@ partial struct RegressionMultipleUniqueIndexesHadSameName
     {
         if (((object)this_) == null || ((object)that) == null)
         {
-            return Object.Equals(this_, that);
+            return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
@@ -101,6 +101,10 @@ partial struct RegressionMultipleUniqueIndexesHadSameName
         RegressionMultipleUniqueIndexesHadSameName that
     )
     {
-        return !(this_ == that);
+        if (((object)this_) == null || ((object)that) == null)
+        {
+            return !object.Equals(this_, that);
+        }
+        return !this_.Equals(that);
     }
 } // RegressionMultipleUniqueIndexesHadSameName

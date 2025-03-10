@@ -55,22 +55,17 @@ partial struct TestUniqueNotEquatable
 
     public override int GetHashCode()
     {
-        return (UniqueField.HasValue ? UniqueField.Value.GetHashCode() : 0)
-            ^ PrimaryKeyField.GetHashCode();
+        return UniqueField.GetHashCode() ^ PrimaryKeyField.GetHashCode();
     }
 
     public override string ToString()
     {
-        return $"TestUniqueNotEquatable(UniqueField = {UniqueField}, PrimaryKeyField = {PrimaryKeyField}";
+        return $"TestUniqueNotEquatable(UniqueField = {UniqueField}, PrimaryKeyField = {PrimaryKeyField})";
     }
 
     public bool Equals(TestUniqueNotEquatable that)
     {
-        return (
-                UniqueField.HasValue
-                    ? UniqueField.Equals(that.UniqueField)
-                    : !that.UniqueField.HasValue
-            ) && PrimaryKeyField.Equals(that.PrimaryKeyField);
+        return UniqueField.Equals(that.UniqueField) && PrimaryKeyField.Equals(that.PrimaryKeyField);
     }
 
     public override bool Equals(object? that)
@@ -80,24 +75,28 @@ partial struct TestUniqueNotEquatable
             return false;
         }
         var that_ = that as TestUniqueNotEquatable?;
-        if (that_ == null)
+        if (((object?)that_) == null)
         {
             return false;
         }
-        return Equals(that);
+        return Equals(that_);
     }
 
     public static bool operator ==(TestUniqueNotEquatable this_, TestUniqueNotEquatable that)
     {
         if (((object)this_) == null || ((object)that) == null)
         {
-            return Object.Equals(this_, that);
+            return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
     public static bool operator !=(TestUniqueNotEquatable this_, TestUniqueNotEquatable that)
     {
-        return !(this_ == that);
+        if (((object)this_) == null || ((object)that) == null)
+        {
+            return !object.Equals(this_, that);
+        }
+        return !this_.Equals(that);
     }
 } // TestUniqueNotEquatable
