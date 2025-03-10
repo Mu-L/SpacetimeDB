@@ -4,7 +4,9 @@
 
 partial class Timers
 {
-    partial struct SendMessageTimer : SpacetimeDB.BSATN.IStructuralReadWrite
+    partial struct SendMessageTimer
+        : System.IEquatable<SendMessageTimer>,
+            SpacetimeDB.BSATN.IStructuralReadWrite
     {
         public void ReadFields(System.IO.BinaryReader reader)
         {
@@ -51,6 +53,51 @@ partial class Timers
             SpacetimeDB.BSATN.AlgebraicType SpacetimeDB.BSATN.IReadWrite<Timers.SendMessageTimer>.GetAlgebraicType(
                 SpacetimeDB.BSATN.ITypeRegistrar registrar
             ) => GetAlgebraicType(registrar);
+        }
+
+        public override int GetHashCode()
+        {
+            return ScheduledId.GetHashCode() ^ ScheduledAt.GetHashCode() ^ Text.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return $"SendMessageTimer(ScheduledId = {ScheduledId}, ScheduledAt = {ScheduledAt}, Text = {Text}";
+        }
+
+        public bool Equals(Timers.SendMessageTimer that)
+        {
+            return ScheduledId.Equals(that.ScheduledId)
+                && ScheduledAt.Equals(that.ScheduledAt)
+                && Text.Equals(that.Text);
+        }
+
+        public override bool Equals(object? that)
+        {
+            if (that == null)
+            {
+                return false;
+            }
+            var that_ = that as Timers.SendMessageTimer?;
+            if (that_ == null)
+            {
+                return false;
+            }
+            return Equals(that);
+        }
+
+        public static bool operator ==(Timers.SendMessageTimer this_, Timers.SendMessageTimer that)
+        {
+            if (((object)this_) == null || ((object)that) == null)
+            {
+                return Object.Equals(this_, that);
+            }
+            return this_.Equals(that);
+        }
+
+        public static bool operator !=(Timers.SendMessageTimer this_, Timers.SendMessageTimer that)
+        {
+            return !(this_ == that);
         }
     } // SendMessageTimer
 } // Timers
