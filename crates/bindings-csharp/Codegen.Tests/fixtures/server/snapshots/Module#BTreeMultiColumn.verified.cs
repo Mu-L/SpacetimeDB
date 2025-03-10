@@ -60,7 +60,7 @@ partial struct BTreeMultiColumn
 
     public override string ToString()
     {
-        return $"BTreeMultiColumn(X = {X}, Y = {Y}, Z = {Z})";
+        return $"BTreeMultiColumn(X = {SpacetimeDB.BSATN.StringUtil.GenericToString(X)}, Y = {SpacetimeDB.BSATN.StringUtil.GenericToString(Y)}, Z = {SpacetimeDB.BSATN.StringUtil.GenericToString(Z)})";
     }
 
 #nullable enable

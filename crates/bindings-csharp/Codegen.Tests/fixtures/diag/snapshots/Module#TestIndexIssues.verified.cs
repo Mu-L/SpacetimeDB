@@ -55,7 +55,7 @@ partial struct TestIndexIssues
 
     public override string ToString()
     {
-        return $"TestIndexIssues(SelfIndexingColumn = {SelfIndexingColumn})";
+        return $"TestIndexIssues(SelfIndexingColumn = {SpacetimeDB.BSATN.StringUtil.GenericToString(SelfIndexingColumn)})";
     }
 
 #nullable enable

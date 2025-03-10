@@ -114,7 +114,7 @@ partial class CustomNestedClass
 
     public override string ToString()
     {
-        return $"CustomNestedClass(NestedClass = {NestedClass}, NestedNullableClass = {NestedNullableClass}, NestedEnum = {NestedEnum}, NestedNullableEnum = {NestedNullableEnum}, NestedTaggedEnum = {NestedTaggedEnum}, NestedNullableTaggedEnum = {NestedNullableTaggedEnum}, NestedCustomRecord = {NestedCustomRecord}, NestedNullableCustomRecord = {NestedNullableCustomRecord})";
+        return $"CustomNestedClass(NestedClass = {SpacetimeDB.BSATN.StringUtil.GenericToString(NestedClass)}, NestedNullableClass = {SpacetimeDB.BSATN.StringUtil.GenericToString(NestedNullableClass)}, NestedEnum = {SpacetimeDB.BSATN.StringUtil.GenericToString(NestedEnum)}, NestedNullableEnum = {SpacetimeDB.BSATN.StringUtil.GenericToString(NestedNullableEnum)}, NestedTaggedEnum = {SpacetimeDB.BSATN.StringUtil.GenericToString(NestedTaggedEnum)}, NestedNullableTaggedEnum = {SpacetimeDB.BSATN.StringUtil.GenericToString(NestedNullableTaggedEnum)}, NestedCustomRecord = {SpacetimeDB.BSATN.StringUtil.GenericToString(NestedCustomRecord)}, NestedNullableCustomRecord = {SpacetimeDB.BSATN.StringUtil.GenericToString(NestedNullableCustomRecord)})";
     }
 
 #nullable enable

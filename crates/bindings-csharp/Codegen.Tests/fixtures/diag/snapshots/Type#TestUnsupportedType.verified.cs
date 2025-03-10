@@ -75,7 +75,7 @@ partial struct TestUnsupportedType
 
     public override string ToString()
     {
-        return $"TestUnsupportedType(UnsupportedSpecialType = {UnsupportedSpecialType}, UnsupportedSystemType = {UnsupportedSystemType}, UnresolvedType = {UnresolvedType}, UnsupportedEnum = {UnsupportedEnum})";
+        return $"TestUnsupportedType(UnsupportedSpecialType = {SpacetimeDB.BSATN.StringUtil.GenericToString(UnsupportedSpecialType)}, UnsupportedSystemType = {SpacetimeDB.BSATN.StringUtil.GenericToString(UnsupportedSystemType)}, UnresolvedType = {SpacetimeDB.BSATN.StringUtil.GenericToString(UnresolvedType)}, UnsupportedEnum = {SpacetimeDB.BSATN.StringUtil.GenericToString(UnsupportedEnum)})";
     }
 
 #nullable enable

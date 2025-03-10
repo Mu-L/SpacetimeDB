@@ -62,7 +62,7 @@ partial struct RegressionMultipleUniqueIndexesHadSameName
 
     public override string ToString()
     {
-        return $"RegressionMultipleUniqueIndexesHadSameName(Unique1 = {Unique1}, Unique2 = {Unique2})";
+        return $"RegressionMultipleUniqueIndexesHadSameName(Unique1 = {SpacetimeDB.BSATN.StringUtil.GenericToString(Unique1)}, Unique2 = {SpacetimeDB.BSATN.StringUtil.GenericToString(Unique2)})";
     }
 
 #nullable enable

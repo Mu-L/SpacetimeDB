@@ -53,7 +53,7 @@ partial struct TestTypeParams<T>
 
     public override string ToString()
     {
-        return $"TestTypeParams(Field = {Field})";
+        return $"TestTypeParams(Field = {SpacetimeDB.BSATN.StringUtil.GenericToString(Field)})";
     }
 
 #nullable enable

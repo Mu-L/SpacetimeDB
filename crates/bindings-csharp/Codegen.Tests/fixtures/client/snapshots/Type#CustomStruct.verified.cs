@@ -54,7 +54,7 @@ partial struct CustomStruct
 
     public override string ToString()
     {
-        return $"CustomStruct(IntField = {IntField}, StringField = {StringField})";
+        return $"CustomStruct(IntField = {SpacetimeDB.BSATN.StringUtil.GenericToString(IntField)}, StringField = {SpacetimeDB.BSATN.StringUtil.GenericToString(StringField)})";
     }
 
 #nullable enable

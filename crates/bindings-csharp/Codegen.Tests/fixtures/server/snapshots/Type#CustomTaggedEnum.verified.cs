@@ -116,13 +116,13 @@ partial record CustomTaggedEnum : System.IEquatable<CustomTaggedEnum>
         switch (this)
         {
             case IntVariant(var inner):
-                return $"IntVariant({inner})";
+                return $"IntVariant({SpacetimeDB.BSATN.StringUtil.GenericToString(inner)})";
             case StringVariant(var inner):
-                return $"StringVariant({inner})";
+                return $"StringVariant({SpacetimeDB.BSATN.StringUtil.GenericToString(inner)})";
             case NullableIntVariant(var inner):
-                return $"NullableIntVariant({inner})";
+                return $"NullableIntVariant({SpacetimeDB.BSATN.StringUtil.GenericToString(inner)})";
             case NullableStringVariant(var inner):
-                return $"NullableStringVariant({inner})";
+                return $"NullableStringVariant({SpacetimeDB.BSATN.StringUtil.GenericToString(inner)})";
             default:
                 return "UNKNOWN";
         }

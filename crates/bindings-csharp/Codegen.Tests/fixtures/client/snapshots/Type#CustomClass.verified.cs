@@ -52,7 +52,7 @@ partial struct CustomClass : System.IEquatable<CustomClass>, SpacetimeDB.BSATN.I
 
     public override string ToString()
     {
-        return $"CustomClass(IntField = {IntField}, StringField = {StringField})";
+        return $"CustomClass(IntField = {SpacetimeDB.BSATN.StringUtil.GenericToString(IntField)}, StringField = {SpacetimeDB.BSATN.StringUtil.GenericToString(StringField)})";
     }
 
 #nullable enable

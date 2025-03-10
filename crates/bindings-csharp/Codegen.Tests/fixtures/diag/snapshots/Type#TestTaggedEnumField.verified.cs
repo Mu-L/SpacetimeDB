@@ -84,9 +84,9 @@ partial record TestTaggedEnumField : System.IEquatable<TestTaggedEnumField>
         switch (this)
         {
             case X(var inner):
-                return $"X({inner})";
+                return $"X({SpacetimeDB.BSATN.StringUtil.GenericToString(inner)})";
             case Y(var inner):
-                return $"Y({inner})";
+                return $"Y({SpacetimeDB.BSATN.StringUtil.GenericToString(inner)})";
             default:
                 return "UNKNOWN";
         }

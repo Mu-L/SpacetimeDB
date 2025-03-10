@@ -252,7 +252,7 @@ public abstract record BaseTypeDeclaration<M>
                     // escaped enough for you?
                     fieldNames.Select(name => $$$"""
                             case {{{name}}}(var inner):
-                                return $"{{{name}}}({inner})";
+                                return $"{{{name}}}({SpacetimeDB.BSATN.StringUtil.GenericToString(inner)})";
                     """)
                 )}}
                     default:
@@ -313,7 +313,7 @@ public abstract record BaseTypeDeclaration<M>
             toString = $$"""
                 return $"{{ShortName}}({{string.Join(
                     ", ",
-                    fieldNames.Select(name => $$"""{{name}} = { {{name}} }""")
+                    fieldNames.Select(name => $$"""{{name}} = {SpacetimeDB.BSATN.StringUtil.GenericToString({{name}})}""")
                 )}})";
         """;
         }

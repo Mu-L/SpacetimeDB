@@ -72,7 +72,7 @@ partial record TestTaggedEnumInlineTuple : System.IEquatable<TestTaggedEnumInlin
         switch (this)
         {
             case Item1(var inner):
-                return $"Item1({inner})";
+                return $"Item1({SpacetimeDB.BSATN.StringUtil.GenericToString(inner)})";
             default:
                 return "UNKNOWN";
         }

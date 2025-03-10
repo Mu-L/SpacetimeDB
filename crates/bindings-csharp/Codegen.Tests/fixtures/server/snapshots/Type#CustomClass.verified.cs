@@ -72,7 +72,7 @@ partial class CustomClass : System.IEquatable<CustomClass>, SpacetimeDB.BSATN.IS
 
     public override string ToString()
     {
-        return $"CustomClass(IntField = {IntField}, StringField = {StringField}, NullableIntField = {NullableIntField}, NullableStringField = {NullableStringField})";
+        return $"CustomClass(IntField = {SpacetimeDB.BSATN.StringUtil.GenericToString(IntField)}, StringField = {SpacetimeDB.BSATN.StringUtil.GenericToString(StringField)}, NullableIntField = {SpacetimeDB.BSATN.StringUtil.GenericToString(NullableIntField)}, NullableStringField = {SpacetimeDB.BSATN.StringUtil.GenericToString(NullableStringField)})";
     }
 
 #nullable enable

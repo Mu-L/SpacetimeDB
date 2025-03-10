@@ -73,7 +73,7 @@ partial struct TestScheduleIssues
 
     public override string ToString()
     {
-        return $"TestScheduleIssues(IdWrongType = {IdWrongType}, IdCorrectType = {IdCorrectType}, ScheduleAtWrongType = {ScheduleAtWrongType}, ScheduleAtCorrectType = {ScheduleAtCorrectType})";
+        return $"TestScheduleIssues(IdWrongType = {SpacetimeDB.BSATN.StringUtil.GenericToString(IdWrongType)}, IdCorrectType = {SpacetimeDB.BSATN.StringUtil.GenericToString(IdCorrectType)}, ScheduleAtWrongType = {SpacetimeDB.BSATN.StringUtil.GenericToString(ScheduleAtWrongType)}, ScheduleAtCorrectType = {SpacetimeDB.BSATN.StringUtil.GenericToString(ScheduleAtCorrectType)})";
     }
 
 #nullable enable

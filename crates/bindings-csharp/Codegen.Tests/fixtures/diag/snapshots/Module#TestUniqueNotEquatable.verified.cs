@@ -60,7 +60,7 @@ partial struct TestUniqueNotEquatable
 
     public override string ToString()
     {
-        return $"TestUniqueNotEquatable(UniqueField = {UniqueField}, PrimaryKeyField = {PrimaryKeyField})";
+        return $"TestUniqueNotEquatable(UniqueField = {SpacetimeDB.BSATN.StringUtil.GenericToString(UniqueField)}, PrimaryKeyField = {SpacetimeDB.BSATN.StringUtil.GenericToString(PrimaryKeyField)})";
     }
 
 #nullable enable

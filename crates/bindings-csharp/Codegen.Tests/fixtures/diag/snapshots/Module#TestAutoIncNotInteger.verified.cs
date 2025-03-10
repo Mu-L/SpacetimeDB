@@ -56,7 +56,7 @@ partial struct TestAutoIncNotInteger
 
     public override string ToString()
     {
-        return $"TestAutoIncNotInteger(AutoIncField = {AutoIncField}, IdentityField = {IdentityField})";
+        return $"TestAutoIncNotInteger(AutoIncField = {SpacetimeDB.BSATN.StringUtil.GenericToString(AutoIncField)}, IdentityField = {SpacetimeDB.BSATN.StringUtil.GenericToString(IdentityField)})";
     }
 
 #nullable enable

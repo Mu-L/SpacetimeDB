@@ -37,7 +37,6 @@ public partial class CustomRecord
     public string? NullableStringField;
 }
 
-
 [StructLayout(LayoutKind.Auto)]
 public partial class CustomClass
 {

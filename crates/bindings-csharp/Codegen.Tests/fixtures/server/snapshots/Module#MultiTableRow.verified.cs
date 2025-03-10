@@ -58,7 +58,7 @@ partial struct MultiTableRow
 
     public override string ToString()
     {
-        return $"MultiTableRow(Name = {Name}, Foo = {Foo}, Bar = {Bar})";
+        return $"MultiTableRow(Name = {SpacetimeDB.BSATN.StringUtil.GenericToString(Name)}, Foo = {SpacetimeDB.BSATN.StringUtil.GenericToString(Foo)}, Bar = {SpacetimeDB.BSATN.StringUtil.GenericToString(Bar)})";
     }
 
 #nullable enable

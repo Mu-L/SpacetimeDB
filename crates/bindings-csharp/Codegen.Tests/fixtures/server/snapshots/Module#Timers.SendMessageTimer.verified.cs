@@ -62,7 +62,7 @@ partial class Timers
 
         public override string ToString()
         {
-            return $"SendMessageTimer(ScheduledId = {ScheduledId}, ScheduledAt = {ScheduledAt}, Text = {Text})";
+            return $"SendMessageTimer(ScheduledId = {SpacetimeDB.BSATN.StringUtil.GenericToString(ScheduledId)}, ScheduledAt = {SpacetimeDB.BSATN.StringUtil.GenericToString(ScheduledAt)}, Text = {SpacetimeDB.BSATN.StringUtil.GenericToString(Text)})";
         }
 
 #nullable enable

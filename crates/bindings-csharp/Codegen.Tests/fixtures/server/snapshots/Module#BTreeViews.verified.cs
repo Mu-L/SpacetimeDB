@@ -60,7 +60,7 @@ partial struct BTreeViews : System.IEquatable<BTreeViews>, SpacetimeDB.BSATN.ISt
 
     public override string ToString()
     {
-        return $"BTreeViews(Id = {Id}, X = {X}, Y = {Y}, Faction = {Faction})";
+        return $"BTreeViews(Id = {SpacetimeDB.BSATN.StringUtil.GenericToString(Id)}, X = {SpacetimeDB.BSATN.StringUtil.GenericToString(X)}, Y = {SpacetimeDB.BSATN.StringUtil.GenericToString(Y)}, Faction = {SpacetimeDB.BSATN.StringUtil.GenericToString(Faction)})";
     }
 
 #nullable enable
