@@ -83,7 +83,7 @@ partial struct MultiTableRow
 
     public static bool operator ==(MultiTableRow this_, MultiTableRow that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return object.Equals(this_, that);
         }
@@ -92,7 +92,7 @@ partial struct MultiTableRow
 
     public static bool operator !=(MultiTableRow this_, MultiTableRow that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return !object.Equals(this_, that);
         }

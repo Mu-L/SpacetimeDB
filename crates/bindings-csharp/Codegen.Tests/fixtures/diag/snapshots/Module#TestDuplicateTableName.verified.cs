@@ -66,7 +66,7 @@ partial struct TestDuplicateTableName
 
     public static bool operator ==(TestDuplicateTableName this_, TestDuplicateTableName that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return object.Equals(this_, that);
         }
@@ -75,7 +75,7 @@ partial struct TestDuplicateTableName
 
     public static bool operator !=(TestDuplicateTableName this_, TestDuplicateTableName that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return !object.Equals(this_, that);
         }

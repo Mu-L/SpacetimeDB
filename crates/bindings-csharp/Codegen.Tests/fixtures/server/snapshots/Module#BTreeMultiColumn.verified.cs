@@ -85,7 +85,7 @@ partial struct BTreeMultiColumn
 
     public static bool operator ==(BTreeMultiColumn this_, BTreeMultiColumn that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return object.Equals(this_, that);
         }
@@ -94,7 +94,7 @@ partial struct BTreeMultiColumn
 
     public static bool operator !=(BTreeMultiColumn this_, BTreeMultiColumn that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return !object.Equals(this_, that);
         }

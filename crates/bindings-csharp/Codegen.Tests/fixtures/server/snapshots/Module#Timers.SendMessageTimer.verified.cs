@@ -89,7 +89,7 @@ partial class Timers
 
         public static bool operator ==(Timers.SendMessageTimer this_, Timers.SendMessageTimer that)
         {
-            if (((object)this_) == null || ((object)that) == null)
+            if (((object?)this_) == null || ((object?)that) == null)
             {
                 return object.Equals(this_, that);
             }
@@ -98,7 +98,7 @@ partial class Timers
 
         public static bool operator !=(Timers.SendMessageTimer this_, Timers.SendMessageTimer that)
         {
-            if (((object)this_) == null || ((object)that) == null)
+            if (((object?)this_) == null || ((object?)that) == null)
             {
                 return !object.Equals(this_, that);
             }

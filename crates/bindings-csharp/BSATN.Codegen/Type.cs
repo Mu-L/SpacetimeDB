@@ -354,16 +354,14 @@ public abstract record BaseTypeDeclaration<M>
 
         if (!Scope.IsRecord)
         {
-            // If we're not a record, override various equality things.
-
-            var equalsDecl = Scope.IsStruct
-                ? $"public bool Equals({FullName} that)"
-                : $"public bool Equals({FullName}? that)";
+            // If we are a reference type, various equality methods need to take nullable references.
+            // If we are a value type, everything is pleasantly by-value.
+            var fullNameMaybeRef = $"{FullName}{(Scope.IsStruct ? "" : "?")}";
 
             extensions.Contents.Append(
                 $$"""
                 #nullable enable
-                {{equalsDecl}}
+                public bool Equals({{fullNameMaybeRef}} that)
                 {
                     {{(Scope.IsStruct ? "" : "if (((object?)that) == null) { return false; }")}}
                      return {{JoinOrElse(
@@ -394,15 +392,15 @@ public abstract record BaseTypeDeclaration<M>
                     return Equals(that_);
                 }
 
-                public static bool operator == ({{FullName}} this_, {{FullName}} that) {
-                    if (((object)this_) == null || ((object)that) == null) {
+                public static bool operator == ({{fullNameMaybeRef}} this_, {{fullNameMaybeRef}} that) {
+                    if (((object?)this_) == null || ((object?)that) == null) {
                         return object.Equals(this_, that);
                     }
                     return this_.Equals(that);
                 }
 
-                public static bool operator != ({{FullName}} this_, {{FullName}} that) {
-                    if (((object)this_) == null || ((object)that) == null) {
+                public static bool operator != ({{fullNameMaybeRef}} this_, {{fullNameMaybeRef}} that) {
+                    if (((object?)this_) == null || ((object?)that) == null) {
                         return !object.Equals(this_, that);
                     }
                     return !this_.Equals(that);

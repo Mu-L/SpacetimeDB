@@ -88,7 +88,7 @@ partial struct BTreeViews : System.IEquatable<BTreeViews>, SpacetimeDB.BSATN.ISt
 
     public static bool operator ==(BTreeViews this_, BTreeViews that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return object.Equals(this_, that);
         }
@@ -97,7 +97,7 @@ partial struct BTreeViews : System.IEquatable<BTreeViews>, SpacetimeDB.BSATN.ISt
 
     public static bool operator !=(BTreeViews this_, BTreeViews that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return !object.Equals(this_, that);
         }

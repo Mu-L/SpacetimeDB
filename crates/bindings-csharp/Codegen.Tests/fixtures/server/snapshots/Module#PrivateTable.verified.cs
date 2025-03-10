@@ -64,18 +64,18 @@ partial class PrivateTable : System.IEquatable<PrivateTable>, SpacetimeDB.BSATN.
         return Equals(that_);
     }
 
-    public static bool operator ==(PrivateTable this_, PrivateTable that)
+    public static bool operator ==(PrivateTable? this_, PrivateTable? that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
-    public static bool operator !=(PrivateTable this_, PrivateTable that)
+    public static bool operator !=(PrivateTable? this_, PrivateTable? that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return !object.Equals(this_, that);
         }

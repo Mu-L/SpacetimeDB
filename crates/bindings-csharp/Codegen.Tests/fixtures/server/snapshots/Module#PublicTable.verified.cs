@@ -252,7 +252,7 @@ partial struct PublicTable : System.IEquatable<PublicTable>, SpacetimeDB.BSATN.I
 
     public static bool operator ==(PublicTable this_, PublicTable that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return object.Equals(this_, that);
         }
@@ -261,7 +261,7 @@ partial struct PublicTable : System.IEquatable<PublicTable>, SpacetimeDB.BSATN.I
 
     public static bool operator !=(PublicTable this_, PublicTable that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return !object.Equals(this_, that);
         }

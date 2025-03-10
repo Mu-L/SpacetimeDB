@@ -26,10 +26,35 @@ public partial class CustomClass
     public string? NullableStringField;
 }
 
+[SpacetimeDB.Type]
+public partial class CustomRecord
+{
+    public const int IGNORE_ME = 0;
+    public static readonly string IGNORE_ME_TOO = "";
+    public int IntField = 0;
+    public string StringField = "";
+    public int? NullableIntField;
+    public string? NullableStringField;
+}
+
+
 [StructLayout(LayoutKind.Auto)]
 public partial class CustomClass
 {
     public int IgnoreExtraFields;
+}
+
+[SpacetimeDB.Type]
+public partial class CustomNestedClass
+{
+    public CustomClass NestedClass = new();
+    public CustomClass? NestedNullableClass = null;
+    public CustomEnum NestedEnum = CustomEnum.EnumVariant1;
+    public CustomEnum? NestedNullableEnum = null;
+    public CustomTaggedEnum NestedTaggedEnum = new CustomTaggedEnum.NullableIntVariant(null);
+    public CustomTaggedEnum? NestedNullableTaggedEnum = null;
+    public CustomRecord NestedCustomRecord = new();
+    public CustomRecord? NestedNullableCustomRecord = null;
 }
 
 [SpacetimeDB.Type]

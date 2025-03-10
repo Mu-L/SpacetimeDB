@@ -101,7 +101,7 @@ partial struct TestScheduleIssues
 
     public static bool operator ==(TestScheduleIssues this_, TestScheduleIssues that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return object.Equals(this_, that);
         }
@@ -110,7 +110,7 @@ partial struct TestScheduleIssues
 
     public static bool operator !=(TestScheduleIssues this_, TestScheduleIssues that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return !object.Equals(this_, that);
         }

@@ -77,7 +77,7 @@ partial class InAnotherNamespace
             InAnotherNamespace.TestDuplicateTableName that
         )
         {
-            if (((object)this_) == null || ((object)that) == null)
+            if (((object?)this_) == null || ((object?)that) == null)
             {
                 return object.Equals(this_, that);
             }
@@ -89,7 +89,7 @@ partial class InAnotherNamespace
             InAnotherNamespace.TestDuplicateTableName that
         )
         {
-            if (((object)this_) == null || ((object)that) == null)
+            if (((object?)this_) == null || ((object?)that) == null)
             {
                 return !object.Equals(this_, that);
             }

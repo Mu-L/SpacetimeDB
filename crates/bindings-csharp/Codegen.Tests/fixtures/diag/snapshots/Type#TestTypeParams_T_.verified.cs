@@ -78,7 +78,7 @@ partial struct TestTypeParams<T>
 
     public static bool operator ==(TestTypeParams<T> this_, TestTypeParams<T> that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return object.Equals(this_, that);
         }
@@ -87,7 +87,7 @@ partial struct TestTypeParams<T>
 
     public static bool operator !=(TestTypeParams<T> this_, TestTypeParams<T> that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return !object.Equals(this_, that);
         }

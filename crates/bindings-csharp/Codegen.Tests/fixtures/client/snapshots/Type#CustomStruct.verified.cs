@@ -79,7 +79,7 @@ partial struct CustomStruct
 
     public static bool operator ==(CustomStruct this_, CustomStruct that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return object.Equals(this_, that);
         }
@@ -88,7 +88,7 @@ partial struct CustomStruct
 
     public static bool operator !=(CustomStruct this_, CustomStruct that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return !object.Equals(this_, that);
         }

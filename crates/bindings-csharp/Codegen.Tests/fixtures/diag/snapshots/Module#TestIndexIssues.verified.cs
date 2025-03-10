@@ -80,7 +80,7 @@ partial struct TestIndexIssues
 
     public static bool operator ==(TestIndexIssues this_, TestIndexIssues that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return object.Equals(this_, that);
         }
@@ -89,7 +89,7 @@ partial struct TestIndexIssues
 
     public static bool operator !=(TestIndexIssues this_, TestIndexIssues that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return !object.Equals(this_, that);
         }

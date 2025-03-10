@@ -62,7 +62,7 @@ partial struct EmptyStruct : System.IEquatable<EmptyStruct>, SpacetimeDB.BSATN.I
 
     public static bool operator ==(EmptyStruct this_, EmptyStruct that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return object.Equals(this_, that);
         }
@@ -71,7 +71,7 @@ partial struct EmptyStruct : System.IEquatable<EmptyStruct>, SpacetimeDB.BSATN.I
 
     public static bool operator !=(EmptyStruct this_, EmptyStruct that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return !object.Equals(this_, that);
         }

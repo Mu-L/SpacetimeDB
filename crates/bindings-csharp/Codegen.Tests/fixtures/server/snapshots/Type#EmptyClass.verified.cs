@@ -64,18 +64,18 @@ partial class EmptyClass : System.IEquatable<EmptyClass>, SpacetimeDB.BSATN.IStr
         return Equals(that_);
     }
 
-    public static bool operator ==(EmptyClass this_, EmptyClass that)
+    public static bool operator ==(EmptyClass? this_, EmptyClass? that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return object.Equals(this_, that);
         }
         return this_.Equals(that);
     }
 
-    public static bool operator !=(EmptyClass this_, EmptyClass that)
+    public static bool operator !=(EmptyClass? this_, EmptyClass? that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return !object.Equals(this_, that);
         }

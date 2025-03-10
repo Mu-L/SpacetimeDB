@@ -77,7 +77,7 @@ partial struct CustomClass : System.IEquatable<CustomClass>, SpacetimeDB.BSATN.I
 
     public static bool operator ==(CustomClass this_, CustomClass that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return object.Equals(this_, that);
         }
@@ -86,7 +86,7 @@ partial struct CustomClass : System.IEquatable<CustomClass>, SpacetimeDB.BSATN.I
 
     public static bool operator !=(CustomClass this_, CustomClass that)
     {
-        if (((object)this_) == null || ((object)that) == null)
+        if (((object?)this_) == null || ((object?)that) == null)
         {
             return !object.Equals(this_, that);
         }
