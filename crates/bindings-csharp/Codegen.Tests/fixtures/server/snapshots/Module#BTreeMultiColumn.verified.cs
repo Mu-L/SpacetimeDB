@@ -63,6 +63,7 @@ partial struct BTreeMultiColumn
         return $"BTreeMultiColumn(X = {X}, Y = {Y}, Z = {Z})";
     }
 
+#nullable enable
     public bool Equals(BTreeMultiColumn that)
     {
         return X.Equals(that.X) && Y.Equals(that.Y) && Z.Equals(that.Z);
@@ -99,4 +100,5 @@ partial struct BTreeMultiColumn
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // BTreeMultiColumn

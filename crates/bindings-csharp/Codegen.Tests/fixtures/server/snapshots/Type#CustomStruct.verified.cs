@@ -77,6 +77,7 @@ partial struct CustomStruct
         return $"CustomStruct(IntField = {IntField}, StringField = {StringField}, NullableIntField = {NullableIntField}, NullableStringField = {NullableStringField})";
     }
 
+#nullable enable
     public bool Equals(CustomStruct that)
     {
         return IntField.Equals(that.IntField)
@@ -120,4 +121,5 @@ partial struct CustomStruct
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // CustomStruct

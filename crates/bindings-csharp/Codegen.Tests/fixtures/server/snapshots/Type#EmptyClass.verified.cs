@@ -40,6 +40,7 @@ partial class EmptyClass : System.IEquatable<EmptyClass>, SpacetimeDB.BSATN.IStr
         return $"EmptyClass()";
     }
 
+#nullable enable
     public bool Equals(EmptyClass? that)
     {
         if (((object?)that) == null)
@@ -80,4 +81,5 @@ partial class EmptyClass : System.IEquatable<EmptyClass>, SpacetimeDB.BSATN.IStr
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // EmptyClass

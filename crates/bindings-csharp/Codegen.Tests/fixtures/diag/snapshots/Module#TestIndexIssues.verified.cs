@@ -58,6 +58,7 @@ partial struct TestIndexIssues
         return $"TestIndexIssues(SelfIndexingColumn = {SelfIndexingColumn})";
     }
 
+#nullable enable
     public bool Equals(TestIndexIssues that)
     {
         return SelfIndexingColumn.Equals(that.SelfIndexingColumn);
@@ -94,4 +95,5 @@ partial struct TestIndexIssues
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // TestIndexIssues

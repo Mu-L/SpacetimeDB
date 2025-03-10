@@ -78,6 +78,7 @@ partial struct TestUnsupportedType
         return $"TestUnsupportedType(UnsupportedSpecialType = {UnsupportedSpecialType}, UnsupportedSystemType = {UnsupportedSystemType}, UnresolvedType = {UnresolvedType}, UnsupportedEnum = {UnsupportedEnum})";
     }
 
+#nullable enable
     public bool Equals(TestUnsupportedType that)
     {
         return UnsupportedSpecialType.Equals(that.UnsupportedSpecialType)
@@ -117,4 +118,5 @@ partial struct TestUnsupportedType
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // TestUnsupportedType

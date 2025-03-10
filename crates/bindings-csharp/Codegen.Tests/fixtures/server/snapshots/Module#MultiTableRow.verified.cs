@@ -61,6 +61,7 @@ partial struct MultiTableRow
         return $"MultiTableRow(Name = {Name}, Foo = {Foo}, Bar = {Bar})";
     }
 
+#nullable enable
     public bool Equals(MultiTableRow that)
     {
         return Name.Equals(that.Name) && Foo.Equals(that.Foo) && Bar.Equals(that.Bar);
@@ -97,4 +98,5 @@ partial struct MultiTableRow
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // MultiTableRow

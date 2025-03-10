@@ -52,6 +52,7 @@ partial class InAnotherNamespace
             return $"TestDuplicateTableName()";
         }
 
+#nullable enable
         public bool Equals(InAnotherNamespace.TestDuplicateTableName that)
         {
             return true;
@@ -94,5 +95,6 @@ partial class InAnotherNamespace
             }
             return !this_.Equals(that);
         }
+#nullable restore
     } // TestDuplicateTableName
 } // InAnotherNamespace

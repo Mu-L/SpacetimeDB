@@ -56,6 +56,7 @@ partial struct TestTypeParams<T>
         return $"TestTypeParams(Field = {Field})";
     }
 
+#nullable enable
     public bool Equals(TestTypeParams<T> that)
     {
         return Field.Equals(that.Field);
@@ -92,4 +93,5 @@ partial struct TestTypeParams<T>
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // TestTypeParams<T>

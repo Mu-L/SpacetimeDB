@@ -63,6 +63,7 @@ partial struct TestUniqueNotEquatable
         return $"TestUniqueNotEquatable(UniqueField = {UniqueField}, PrimaryKeyField = {PrimaryKeyField})";
     }
 
+#nullable enable
     public bool Equals(TestUniqueNotEquatable that)
     {
         return UniqueField.Equals(that.UniqueField) && PrimaryKeyField.Equals(that.PrimaryKeyField);
@@ -99,4 +100,5 @@ partial struct TestUniqueNotEquatable
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // TestUniqueNotEquatable

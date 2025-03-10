@@ -75,6 +75,7 @@ partial class CustomClass : System.IEquatable<CustomClass>, SpacetimeDB.BSATN.IS
         return $"CustomClass(IntField = {IntField}, StringField = {StringField}, NullableIntField = {NullableIntField}, NullableStringField = {NullableStringField})";
     }
 
+#nullable enable
     public bool Equals(CustomClass? that)
     {
         if (((object?)that) == null)
@@ -122,4 +123,5 @@ partial class CustomClass : System.IEquatable<CustomClass>, SpacetimeDB.BSATN.IS
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // CustomClass

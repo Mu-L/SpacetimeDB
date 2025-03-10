@@ -63,6 +63,7 @@ partial struct BTreeViews : System.IEquatable<BTreeViews>, SpacetimeDB.BSATN.ISt
         return $"BTreeViews(Id = {Id}, X = {X}, Y = {Y}, Faction = {Faction})";
     }
 
+#nullable enable
     public bool Equals(BTreeViews that)
     {
         return Id.Equals(that.Id)
@@ -102,4 +103,5 @@ partial struct BTreeViews : System.IEquatable<BTreeViews>, SpacetimeDB.BSATN.ISt
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // BTreeViews

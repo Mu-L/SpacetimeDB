@@ -59,6 +59,7 @@ partial struct TestAutoIncNotInteger
         return $"TestAutoIncNotInteger(AutoIncField = {AutoIncField}, IdentityField = {IdentityField})";
     }
 
+#nullable enable
     public bool Equals(TestAutoIncNotInteger that)
     {
         return AutoIncField.Equals(that.AutoIncField) && IdentityField.Equals(that.IdentityField);
@@ -95,4 +96,5 @@ partial struct TestAutoIncNotInteger
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // TestAutoIncNotInteger

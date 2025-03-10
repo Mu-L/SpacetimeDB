@@ -199,6 +199,7 @@ partial struct PublicTable : System.IEquatable<PublicTable>, SpacetimeDB.BSATN.I
         return $"PublicTable(Id = {Id}, ByteField = {ByteField}, UshortField = {UshortField}, UintField = {UintField}, UlongField = {UlongField}, UInt128Field = {UInt128Field}, U128Field = {U128Field}, U256Field = {U256Field}, SbyteField = {SbyteField}, ShortField = {ShortField}, IntField = {IntField}, LongField = {LongField}, Int128Field = {Int128Field}, I128Field = {I128Field}, I256Field = {I256Field}, BoolField = {BoolField}, FloatField = {FloatField}, DoubleField = {DoubleField}, StringField = {StringField}, IdentityField = {IdentityField}, ConnectionIdField = {ConnectionIdField}, CustomStructField = {CustomStructField}, CustomClassField = {CustomClassField}, CustomEnumField = {CustomEnumField}, CustomTaggedEnumField = {CustomTaggedEnumField}, ListField = {ListField}, NullableValueField = {NullableValueField}, NullableReferenceField = {NullableReferenceField})";
     }
 
+#nullable enable
     public bool Equals(PublicTable that)
     {
         return Id.Equals(that.Id)
@@ -266,4 +267,5 @@ partial struct PublicTable : System.IEquatable<PublicTable>, SpacetimeDB.BSATN.I
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // PublicTable

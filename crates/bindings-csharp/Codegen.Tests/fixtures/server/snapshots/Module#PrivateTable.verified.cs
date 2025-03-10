@@ -40,6 +40,7 @@ partial class PrivateTable : System.IEquatable<PrivateTable>, SpacetimeDB.BSATN.
         return $"PrivateTable()";
     }
 
+#nullable enable
     public bool Equals(PrivateTable? that)
     {
         if (((object?)that) == null)
@@ -80,4 +81,5 @@ partial class PrivateTable : System.IEquatable<PrivateTable>, SpacetimeDB.BSATN.
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // PrivateTable

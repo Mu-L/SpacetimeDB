@@ -362,6 +362,7 @@ public abstract record BaseTypeDeclaration<M>
 
             extensions.Contents.Append(
                 $$"""
+                #nullable enable
                 {{equalsDecl}}
                 {
                     {{(Scope.IsStruct ? "" : "if (((object?)that) == null) { return false; }")}}
@@ -406,6 +407,7 @@ public abstract record BaseTypeDeclaration<M>
                     }
                     return !this_.Equals(that);
                 }
+                #nullable restore
             """
             );
         }

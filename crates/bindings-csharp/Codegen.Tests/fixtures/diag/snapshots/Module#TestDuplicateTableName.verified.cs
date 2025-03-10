@@ -44,6 +44,7 @@ partial struct TestDuplicateTableName
         return $"TestDuplicateTableName()";
     }
 
+#nullable enable
     public bool Equals(TestDuplicateTableName that)
     {
         return true;
@@ -80,4 +81,5 @@ partial struct TestDuplicateTableName
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // TestDuplicateTableName

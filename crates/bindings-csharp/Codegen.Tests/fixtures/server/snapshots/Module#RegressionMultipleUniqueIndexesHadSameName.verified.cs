@@ -65,6 +65,7 @@ partial struct RegressionMultipleUniqueIndexesHadSameName
         return $"RegressionMultipleUniqueIndexesHadSameName(Unique1 = {Unique1}, Unique2 = {Unique2})";
     }
 
+#nullable enable
     public bool Equals(RegressionMultipleUniqueIndexesHadSameName that)
     {
         return Unique1.Equals(that.Unique1) && Unique2.Equals(that.Unique2);
@@ -107,4 +108,5 @@ partial struct RegressionMultipleUniqueIndexesHadSameName
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // RegressionMultipleUniqueIndexesHadSameName

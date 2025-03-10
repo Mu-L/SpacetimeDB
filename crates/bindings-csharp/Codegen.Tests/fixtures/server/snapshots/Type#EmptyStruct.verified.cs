@@ -40,6 +40,7 @@ partial struct EmptyStruct : System.IEquatable<EmptyStruct>, SpacetimeDB.BSATN.I
         return $"EmptyStruct()";
     }
 
+#nullable enable
     public bool Equals(EmptyStruct that)
     {
         return true;
@@ -76,4 +77,5 @@ partial struct EmptyStruct : System.IEquatable<EmptyStruct>, SpacetimeDB.BSATN.I
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // EmptyStruct

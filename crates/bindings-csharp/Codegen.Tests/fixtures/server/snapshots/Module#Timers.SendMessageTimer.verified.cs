@@ -65,6 +65,7 @@ partial class Timers
             return $"SendMessageTimer(ScheduledId = {ScheduledId}, ScheduledAt = {ScheduledAt}, Text = {Text})";
         }
 
+#nullable enable
         public bool Equals(Timers.SendMessageTimer that)
         {
             return ScheduledId.Equals(that.ScheduledId)
@@ -103,5 +104,6 @@ partial class Timers
             }
             return !this_.Equals(that);
         }
+#nullable restore
     } // SendMessageTimer
 } // Timers

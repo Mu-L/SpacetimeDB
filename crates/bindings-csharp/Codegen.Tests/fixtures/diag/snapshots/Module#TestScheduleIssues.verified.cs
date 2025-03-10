@@ -76,6 +76,7 @@ partial struct TestScheduleIssues
         return $"TestScheduleIssues(IdWrongType = {IdWrongType}, IdCorrectType = {IdCorrectType}, ScheduleAtWrongType = {ScheduleAtWrongType}, ScheduleAtCorrectType = {ScheduleAtCorrectType})";
     }
 
+#nullable enable
     public bool Equals(TestScheduleIssues that)
     {
         return IdWrongType.Equals(that.IdWrongType)
@@ -115,4 +116,5 @@ partial struct TestScheduleIssues
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // TestScheduleIssues

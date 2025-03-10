@@ -55,6 +55,7 @@ partial struct CustomClass : System.IEquatable<CustomClass>, SpacetimeDB.BSATN.I
         return $"CustomClass(IntField = {IntField}, StringField = {StringField})";
     }
 
+#nullable enable
     public bool Equals(CustomClass that)
     {
         return IntField.Equals(that.IntField) && StringField.Equals(that.StringField);
@@ -91,4 +92,5 @@ partial struct CustomClass : System.IEquatable<CustomClass>, SpacetimeDB.BSATN.I
         }
         return !this_.Equals(that);
     }
+#nullable restore
 } // CustomClass
